@@ -1,7 +1,7 @@
 #####
 # Load libraries:
 #####
-source(paste0(getwd(),"/Scripts/Load_libraries.R"))
+source(paste0(getwd(),"/Scripts/Universal/Load_libraries.R"))
 #####
 # Set calculation parameters:
 #####
@@ -14,11 +14,12 @@ buff_unbuff = "Buffered"
 #####
 wmus = read_sf(paste0(getwd(),"/Data/Input_data/Wildlife_Management_Units_5181502506492967745/Wildlife_Management_Units.shp"))
 
-source(paste0(getwd(),"/Scripts/Land_cover_download.R"))
+source(paste0(getwd(),"/Scripts/Universal/Land_cover_download.R"))
 
 NYS_LC = get_nlcd(template = NYS %>%
                     st_transform(.,crs=st_crs(wmus)),
          year = 2019,
+         landmass = 'L48',
          label = "Forests")
 
 LCr = rast(NYS_LC)
@@ -51,7 +52,7 @@ LCcrop = terra::crop(x = LCproj,
 #####
 # Node processing:
 #####
-source(paste0(getwd(),"/Scripts/Process_nodes.R"))
+source(paste0(getwd(),"/Scripts/Universal/Process_nodes.R"))
 
 #####
 # Calculate vertex comparison pairs:
@@ -71,10 +72,10 @@ combinations = combinations %>%
 #####
 # Calculate vertex distances and areas
 #####
-source(paste0(getwd(),'/SCR_paper/Scripts/Distance_calculation.R'))
+source(paste0(getwd(),'/Scripts/PC_ECA/Distance_calculation.R'))
 
 #####
 # Calculate graph and final metric values
 #####
-source(paste0(getwd(),'/SCR_paper/Scripts/Graph_calculation.R'))
+source(paste0(getwd(),'/Scripts/PC_ECA/Graph_calculation.R'))
 }
