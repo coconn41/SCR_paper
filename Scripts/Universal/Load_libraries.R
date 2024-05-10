@@ -1,0 +1,55 @@
+if(!require('rlang')){
+  install.packages('rlang')}
+library(rlang)
+if(!require('sf')){
+  install.packages('sf')}
+library(sf)
+if(!require('sp')){
+  install.packages('sp')}
+library(sp)
+if(!require('terra')){
+  install.packages('terra')}
+library(terra)
+if(!require('FedData')){
+  install.packages('FedData')}
+library(FedData)
+if(!require('landscapemetrics')){
+  install.packages('landscapemetrics')}
+library(landscapemetrics)
+if(!require('dplyr')){
+  install.packages('dplyr')}
+library(dplyr)
+if(!require('tidyr')){
+  install.packages('tidyr')}
+library(tidyr)
+if(!require('readr')){
+  install.packages('readr')}
+library(readr)
+if(!require('units')){
+  install.packages('units')}
+library(units)
+if(!require('geosphere')){
+  install.packages('geosphere')}
+library(geosphere)
+if(!require('foreach')){
+  install.packages('foreach')}
+library(foreach)
+if(!require('parallel')){
+  install.packages('parallel')}
+library(parallel)
+if(!require('readxl')){
+  install.packages('readxl')}
+library(readxl)
+if(!require('igraph')){
+  install.packages('igraph')}
+library(igraph)
+if(!require('leastcostpath')){
+  install.packages('leastcostpath')}
+library(leastcostpath)
+if(!require('tmap')){
+  install.packages('tmap')}
+library(tmap)
+if(!require('tmaptools')){
+  install.packages('tmaptools')}
+library(tmaptools)
+
