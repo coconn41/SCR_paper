@@ -201,7 +201,7 @@ tm_shape(DMP_spatial %>%
            filter(is.na(DMPs)==T))+tm_polygons(col='grey50')+
   tm_layout(legend.position=c('left','top'))+
 tm_add_legend(type='fill',
-              title = "Deer Management Permits",
+              title = "Target Deer Management Permits",
               col = c(pal[1],
                       pal[2],
                       pal[3],
@@ -218,4 +218,8 @@ tm_add_legend(type='fill',
                          "Missing"));DMP_map
 tmap_save(DMP_map,
           filename = paste0(getwd(),"/Figures/Deer_Management_Permits.jpeg"),
+          dpi=300)
+
+tmap_save(DMP_map,
+          filename = paste0(getwd(),"/Figures/Deer_Management_Permits.tiff"),
           dpi=300)
