@@ -10,7 +10,6 @@ comps <- foreach::foreach(i = 1:nrow(fin_poly), .errorhandling = "remove", .comb
 }
 
 parallel::stopCluster(myCluster)
-unregister_dopar
 
 comps = comps %>%
   filter(row!=col)

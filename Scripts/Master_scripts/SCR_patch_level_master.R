@@ -33,11 +33,17 @@ source(paste0(getwd(),"/Scripts/SCR/Alpine_ecozone_cleaning.R"))
 # Node processing:
 #####
 source(paste0(getwd(),"/Scripts/Universal/Process_nodes.R"))
-
+nodes = wmu_nodes
+remove(wmu_nodes)
 #####
 # Resistance Raster Processing:
 #####
 source(paste0(getwd(),"/Scripts/SCR/Resistance_raster_processing.R"))
+
+#####
+# Calculate comparison matrix:
+#####
+source(paste0(getwd(),'/Scripts/SCR/Within_distance_comps.R'))
 
 #####
 # Least-cost Path Calculations:
@@ -47,12 +53,13 @@ source(paste0(getwd(),"/Scripts/SCR/Calculate_least_cost_paths.R"))
 #####
 # Get Euclidean distances:
 #####
+# This includes some reassigning of objects
+# that are used in both landscape and patch level metrics
+wmu_nodes = nodes
+wmus = NYS
 source(paste0(getwd(),"/Scripts/SCR/Get_euclidean_distances.R"))
-
-#####
-# Calculate sinuosity:
-#####
-source(paste0(getwd(),"/Scripts/SCR/Calculate_inverse_sinuosity.R"))
+remove(wmu_nodes)
+remove(wmus)
 
 #####
 # Calculate threshold buffers:
