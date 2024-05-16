@@ -52,4 +52,7 @@ library(tmap)
 if(!require('tmaptools')){
   install.packages('tmaptools')}
 library(tmaptools)
+if(!require('ggplot2')){
+  install.packages('ggplot2')}
+library(ggplot2)
 
