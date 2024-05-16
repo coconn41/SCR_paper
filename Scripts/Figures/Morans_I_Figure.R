@@ -27,6 +27,7 @@ Moran_plot=ggplot(data=morandf %>%
 # Save file
 #####
 ggsave(Moran_plot,
-       filename = paste0(getwd(),'/Figures/Moran_plot.jpeg'),
+       filename = paste0(getwd(),'/Figures/Moran_plot.tiff'),
        dpi = 300,
+       width = 12,
        height = 4)
