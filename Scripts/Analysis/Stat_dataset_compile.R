@@ -26,9 +26,7 @@ for(i in 1:length(unbuf_files)){
   ind=ind+1
   fl = read.csv(paste0(getwd(),"/Data/Output_data/PC_ECA/Unbuffered/",unbuf_files[i]))
   fl$wmu_type="unbuffered"
-  fl2 = rbind(fl,fl2) #switch back when buffered files are downloaded
-  if(ind==1){fl2 = fl}
-  if(ind>1){fl2 = rbind(fl,fl2)}
+  fl2 = rbind(fl,fl2) 
 }
 unbuf_custom_files = list.files(paste0(getwd(),"/Data/Output_data/SCR/Landscape/Unbuffered/"))
 buf_custom_files = list.files(paste0(getwd(),"/Data/Output_data/SCR/Landscape/Buffered/"))
