@@ -78,4 +78,9 @@ source(paste0(getwd(),'/Scripts/PC_ECA/Distance_calculation.R'))
 # Calculate graph and final metric values
 #####
 source(paste0(getwd(),'/Scripts/PC_ECA/Graph_calculation.R'))
+
+#####
+# Save files:
+#####
+source(paste0(getwd(),'/Scripts/PC_ECA/Save_PC_ECA.R'))
 }
