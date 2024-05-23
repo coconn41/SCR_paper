@@ -40,8 +40,8 @@ attributes(line_df$euclid_lengths)=NULL
 
 sinuosity_df = line_df %>%
   st_drop_geometry() %>%
-  left_join(.,lcp_network %>% 
-              st_drop_geometry(),by=c("origin_ID","destination_ID")) %>%
+  left_join(.,lcp_network,# %>% st_drop_geometry(),
+              by=c("origin_ID","destination_ID")) %>%
   #dplyr::select(-direction),by=c("origin_ID","destination_ID")) %>%
   mutate(length = ifelse(is.na(length)==T,0,length),
          sinuosity = length/euclid_lengths,
@@ -49,3 +49,32 @@ sinuosity_df = line_df %>%
   left_join(.,fin_poly,by=c("destination_ID"="layer")) %>%
   #mutate(mini_metric = inv_sinuosity*area) %>%
   dplyr::select(-area)
+
+sinuosity_df2 = line_df %>%
+  st_drop_geometry() %>%
+  left_join(.,lcp_network, #%>% st_drop_geometry(),
+            by=c("origin_ID","destination_ID")) %>%
+  #dplyr::select(-direction),by=c("origin_ID","destination_ID")) %>%
+  mutate(length = ifelse(is.na(length)==T,0,length),
+         sinuosity = length/euclid_lengths,
+         inv_sinuosity = ifelse(length==0,0,euclid_lengths/length)) %>%
+  left_join(.,fin_poly,by=c("destination_ID"="layer")) %>%
+  #mutate(mini_metric = inv_sinuosity*area) %>%
+  dplyr::select(-area) %>%
+  mutate(origin_ID2 = destination_ID,
+         destination_ID2 = origin_ID) %>%
+  mutate(origin_ID = origin_ID2,
+         destination_ID = destination_ID2) %>%
+  dplyr::select(-c(origin_ID2,destination_ID2))
+
+sinuosity_df = rbind(sinuosity_df,sinuosity_df2)
+
+line_df2 = st_sfc(l_sf2) %>%
+  st_as_sf() %>%
+  st_set_crs(.,st_crs(wmus)) %>%
+  mutate(origin_ID = end.coords$id,
+         destination_ID = begin.coords$id,
+         euclid_lengths = st_length(.))
+attributes(line_df2$euclid_lengths)=NULL
+
+line_df = rbind(line_df,line_df2)

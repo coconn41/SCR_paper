@@ -13,7 +13,7 @@ bufs = fin_poly[i,] %>%
 }
 
 clipped_polys <- foreach::foreach(i = 1:nrow(buffer_polys), .errorhandling = "remove", .combine = "rbind",.packages = c("sf", "dplyr")) %dopar% {
-df = comps %>%
+df = comps2 %>%
   filter(row == i)
 clp = st_intersection(buffer_polys[i,],fin_poly[c(df$col),]) %>%
  dplyr::select(layer,layer.1,geometry) %>%

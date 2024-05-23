@@ -85,21 +85,6 @@ source(paste0(getwd(),"/Scripts/SCR/Calculate_buffer_thresholds.R"))
 # Get final dataset
 #####
 
-sinuosity_df = line_df %>%
-  st_drop_geometry() %>%
-  left_join(.,lcp_network %>% 
-              st_drop_geometry(),by=c("origin_ID","destination_ID")) %>%
-  #dplyr::select(-direction),by=c("origin_ID","destination_ID")) %>%
-  mutate(length = ifelse(is.na(length)==T,0,length),
-         sinuosity = length/euclid_lengths,
-         inv_sinuosity = ifelse(length==0,0,euclid_lengths/length)) %>%
-  left_join(.,fin_poly %>%
-              st_drop_geometry(),by=c("destination_ID"="layer")) %>%
-  #mutate(mini_metric = inv_sinuosity*area) %>%
-  dplyr::select(-area) %>%
-  left_join(.,lcp_network,by=c("origin_ID","destination_ID")) %>%
-  st_set_geometry('geometry')
-
 names(sinuosity_df)[1]="layer"
 names(sinuosity_df)[2]="layer.1"
 
@@ -111,42 +96,25 @@ combdf = left_join(clipped_polys %>% st_drop_geometry(),
               dplyr::select(layer,i_area,di_area)) %>%
   filter(is.na(inv_sinuosity)==F)
 
-sindf2 = sinuosity_df %>%
-  mutate(layer.2 = layer,
-         layer = layer.1) %>%
-  mutate(layer.1 = layer.2)
-
-null_df = left_join(clipped_polys %>% st_drop_geometry(),
-                    sinuosity_df %>% st_drop_geometry()) %>%
- # dplyr::select(-geometry) %>%
-  left_join(.,buffer_polys %>%
-              st_drop_geometry() %>%
-              dplyr::select(layer,i_area,di_area)) %>%
-  filter(is.na(inv_sinuosity)==T) %>%
-  dplyr::select(layer,layer.1,i_area,j_area,di_area) %>%
-  left_join(.,sindf2) %>%
-  filter(is.na(inv_sinuosity)==F) %>%
-  dplyr::select(names(combdf))
-
-merged_df = rbind(combdf,null_df) %>%
+merged_df = combdf %>%
   mutate(sin_area = j_area*inv_sinuosity) %>%
   group_by(layer) %>%
   summarize(metric = (max(i_area)+sum(sin_area))/max(di_area)) %>%
-  left_join(.,fin_poly) %>%
-  st_set_geometry('geometry') %>%
-  rename('origin_ID' = 'layer')
+  left_join(.,fin_poly)%>%#,by=c("origin_ID"="layer")) %>%
+  st_set_geometry('geometry')
 
 #####
 # Make map
 #####
 
-plotlydf = rbind(combdf,null_df) %>%
+plotdf = combdf %>%
   group_by(layer) %>%
   summarize(mean_inv_sinuousity = mean(inv_sinuosity,na.rm=T)) %>%
   left_join(.,fin_poly) %>%
   #st_set_geometry('geometry') %>%
   rename('origin_ID' = 'layer') %>%
-  left_join(merged_df,.,by='origin_ID') %>%
+  left_join(.,merged_df %>%
+              rename('origin_ID' = 'layer'),by='origin_ID') %>%
   mutate(area_cat = ifelse(area.x>=as.numeric(quantile(.$area.x,.9)),
                            3,ifelse(area.x>=as.numeric(quantile(.$area.x,.75)),2,1)),
          conn_cat = ifelse(mean_inv_sinuousity>=as.numeric(quantile(.$mean_inv_sinuousity,.9)),
@@ -154,34 +122,34 @@ plotlydf = rbind(combdf,null_df) %>%
 
 rm_polys = c(75,106,936,6030,1516,26,149,97,2194,91)
 
-medians = plotlydf %>%
+medians = plotdf %>%
   filter(!c(origin_ID%in%rm_polys)) %>%
   st_drop_geometry() %>%
   dplyr::select(-geometry.y) %>%
-  left_join(.,plotlydf %>%
+  left_join(.,plotdf %>%
               st_drop_geometry() %>%
               dplyr::select(-geometry.y)) %>%
   group_by(area_cat,conn_cat) %>%
   summarize(med = median(sort(metric)[-1])) 
 
-medians2 = plotlydf %>%
+medians2 = plotdf %>%
   filter(!c(origin_ID%in%rm_polys)) %>%
   st_drop_geometry() %>%
   dplyr::select(-geometry.y) %>%
-  left_join(.,plotlydf %>%
+  left_join(.,plotdf %>%
               st_drop_geometry() %>%
               dplyr::select(-geometry.y)) %>%
   group_by(area_cat,conn_cat) %>%
   summarize(med = median(metric)) 
 
-pdf2=plotlydf %>%
+pdf2=plotdf %>%
   filter(!c(origin_ID%in%rm_polys)) %>%
   st_drop_geometry() %>%
   dplyr::select(-geometry.y) %>%
   left_join(.,medians) %>%
   group_by(area_cat,conn_cat) %>%
   filter(metric==med)
-pdf3 = plotlydf %>%
+pdf3 = plotdf %>%
   filter(!c(origin_ID%in%rm_polys)) %>%
   st_drop_geometry() %>%
   dplyr::select(-geometry.y) %>%
@@ -222,26 +190,26 @@ for(i in unique(selected_polys)){
   ind=ind+1
   lcp_network2 = sindf3 %>%
     dplyr::filter(origin_ID==i|
-             destination_ID==i) #%>%
+             destination_ID==i) %>%
     #st_drop_geometry() %>%
     #left_join(.,lcp_network,by=c('origin_ID','destination_ID')) %>%
-    #st_set_geometry('geometry.y') %>%
+    st_set_geometry('geometry.x')
     #filter(sf::st_is_empty(.)==F)
-  nodelist = line_df %>% filter(origin_ID==selected_polys[ind]) 
+  nodelist = line_df %>% filter(origin_ID==selected_polys[ind])
   nodelist2 = line_df %>% filter(destination_ID==selected_polys[ind]) 
   nodelistfin = c(nodelist$destination_ID,nodelist$origin_ID,nodelist2$destination_ID,nodelist2$origin_ID)
   text = merged_df %>% st_drop_geometry() %>%
-    filter(origin_ID==selected_polys[ind]) %>%
+    filter(layer==selected_polys[ind]) %>%
     dplyr::select(metric)
   MM = merged_df %>% st_drop_geometry() %>%
-    filter(origin_ID==selected_polys[ind]) #%>%
+    filter(layer==selected_polys[ind]) #%>%
     #dplyr::select(small_metric)
-  map = tm_shape(merged_df %>% filter(origin_ID %in% c(nodelistfin))) +
+  map = tm_shape(merged_df %>% filter(layer %in% c(nodelistfin))) +
     tm_polygons(alpha=.45,col='grey80')+#col='i_area',
     # breaks=c(1000000,2000000,3000000,4000000,
     #          5000000,7500000,20000000))+
     #tm_borders(alpha=.45,col='black')+
-    tm_shape(st_centroid(merged_df %>% filter(origin_ID %in% c(nodelistfin))))+
+    tm_shape(st_centroid(merged_df %>% filter(layer %in% c(nodelistfin))))+
     tm_dots(size=.05)+
     #tm_shape(line_df %>% 
     #           filter(origin_ID==i|
@@ -253,7 +221,7 @@ for(i in unique(selected_polys)){
     tm_lines(col='inv_sinuosity',lwd=2,
              breaks=c(.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1),
              palette = get_brewer_pal("Blues",n=13))+#viridis::viridis(n=6,direction = 1)
-    tm_shape(merged_df %>% filter(origin_ID==selected_polys[ind]))+
+    tm_shape(merged_df %>% filter(layer==selected_polys[ind]))+
     tm_polygons(col="red",border.col = 'black')+
     tm_credits(text=paste0("SCR = ",round(text,4)),
                size=1,position = c('center','BOTTOM'))+
