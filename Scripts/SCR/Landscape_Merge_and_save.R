@@ -1,34 +1,24 @@
-combdf = fin_poly[comps2$row,] %>%
-  st_drop_geometry() %>%
-  bind_cols(.,fin_poly[comps2$col,] %>%
-              st_drop_geometry())
-names(combdf)=c("origin_ID","i_area","destination_ID","j_area")
+names(sinuosity_df)[1]="layer"
+names(sinuosity_df)[2]="layer.1"
 
-sindf_UTLT = sinuosity_df %>%
-  st_drop_geometry() %>%
-  bind_rows(.,sinuosity_df %>%
-              st_drop_geometry() %>%
-              mutate(origin_ID2 = destination_ID,
-                     destination_ID2 = origin_ID) %>%
-              select(-c(destination_ID,origin_ID)) %>%
-              mutate(origin_ID = origin_ID2,
-                     destination_ID = destination_ID2) %>%
-              select(-c(destination_ID2,origin_ID2))) %>%
-  arrange(origin_ID,destination_ID)
-
-combdf = combdf %>%
-  left_join(.,
-            sindf_UTLT,
-            by=c('origin_ID','destination_ID'))
+combdf = left_join(fin_poly,
+            sinuosity_df,
+            by=c('layer')) %>%
+  left_join(.,fin_poly %>% st_drop_geometry(),
+            by=c('layer.1'='layer')) %>%
+  rename('i_area' = 'area.x',
+         'j_area' = 'area.y')
 
 final_metric = combdf %>%
   mutate(sijaj = inv_sinuosity*j_area) %>%
-  group_by(origin_ID) %>%
+  st_drop_geometry() %>%
+  dplyr::select(-c(geometry.x,geometry.y)) %>%
+  group_by(layer) %>%
   summarize(sijaj_sum = sum(sijaj,na.rm=T)) %>%
   ungroup() %>%
   left_join(.,fin_poly %>%
               st_drop_geometry(),
-            by=c('origin_ID'='layer')) %>%
+            by='layer') %>%
   mutate(numerator = sijaj_sum+area) %>%
   summarize(numerator_sum = sum(sijaj_sum,na.rm=T))
 

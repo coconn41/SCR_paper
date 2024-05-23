@@ -24,7 +24,6 @@ lcp_network <- foreach::foreach(i = 1:nrow(comps), .errorhandling = "remove", .c
 }
 
 parallel::stopCluster(myCluster)
-unregister_dopar
 
 attributes(lcp_network$length) <- NULL
 lcp_network=lcp_network[,-c(1:3)]

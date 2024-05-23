@@ -13,7 +13,7 @@ buff_unbuff = "Buffered"
 # WMU Shapefile download:
 #####
 
-wmus = read_sf(paste0(getwd(),"/Data/Input_data/Wildlife_Management_Units_5181502506492967745/Wildlife_Management_Units.shp"))
+wmus = read_sf(paste0(getwd(),"/Data/Input_data/WMUS/Wildlife_Management_Units.shp"))
 
 #####
 # Loop through analysis
@@ -34,12 +34,13 @@ for(x in unique(wmus$UNIT)){
 # Land Cover Download
 #####
 template = sing_wmu
+tdir = tempdir()
 source(paste0(getwd(),"/Scripts/Universal/Land_cover_download.R"))
   
 #####
 # Roadway Data Cleaning:
 #####
-source(paste0(getwd(),"/Scripts/Universal/Roadway_data_cleaning.R"))
+source(paste0(getwd(),"/Scripts/SCR/Roadway_data_cleaning.R"))
   
 #####
 # Alpine Ecozone Data Cleaning:
@@ -64,7 +65,7 @@ source(paste0(getwd(),"/Scripts/SCR/Within_distance_comps.R"))
 #####
 # Landscape level metric comparisons:
 #####
-source(paste0(getwd(),"/Scrips/SCR/Landscape_network.R"))
+source(paste0(getwd(),"/Scripts/SCR/Landscape_network.R"))
   
 #####
 # Get Euclidean Distances

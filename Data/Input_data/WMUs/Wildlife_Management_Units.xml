@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+    <idinfo>
+        <citation>
+            <citeinfo>
+                <title>Wildlife Management Unit - New York State (NYSDEC)</title>
+                <geoform>vector digital data</geoform>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>This data set shows management units for deer and other wildlife in New York, beginning with the 2009/2010 season.Service layer is updated as needed.For more information please https://www.dec.ny.gov/outdoor/8302.html1. The NYS DEC asks to be credited in derived products.   2. Secondary Distribution of the data is not allowed.   3. Any documentation provided is an integral part of the data set.  Failure to use the documentation in conjunction with the digital data constitutes misuse of the data.   4. Although every effort has been made to ensure the accuracy of information, errors may be reflected in the data supplied.  The user must be aware of data conditions and bear responsibility for the appropriate use of the information with respect to possible errors, original map scale, collection methodology, currency of data, and other conditions.</abstract>
+            <purpose>To provide a digital representation of Wildlife Management Units in New York State.</purpose>
+        </descript>
+        <spdom>
+            <bounding>
+                <westbc>-79.996676</westbc>
+                <eastbc>-71.649978</eastbc>
+                <northbc>45.022654</northbc>
+                <southbc>40.404934</southbc>
+            </bounding>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>None</themekt>
+                <themekey>biota</themekey>
+                <themekey>boundaries</themekey>
+                <themekey>environment</themekey>
+                <themekey>custodial</themekey>
+                <themekey>wildlife</themekey>
+                <themekey>management</themekey>
+                <themekey>hunting</themekey>
+                <themekey>furbearer</themekey>
+                <themekey>game</themekey>
+            </theme>
+        </keywords>
+        <accconst>Other Constraints</accconst>
+        <useconst>1. The NYS DEC asks to be credited in derived products.   2. Secondary Distribution of the data is not allowed.   3. Any documentation provided is an integral part of the data set.  Failure to use the documentation in conjunction with the digital data constitutes misuse of the data.   4. Although every effort has been made to ensure the accuracy of information, errors may be reflected in the data supplied.  The user must be aware of data conditions and bear responsibility for the appropriate use of the information with respect to possible errors, original map scale, collection methodology, currency of data, and other conditions.</useconst>
+        <ptcontac>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>New York State Department of Environmental Conservation</cntorg>
+                    <cntper>Bureau of Wildlife</cntper>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>mailing and physical</addrtype>
+                    <address>625 Broadway</address>
+                    <city>Albany</city>
+                    <state>NY</state>
+                    <postal>12233</postal>
+                </cntaddr>
+                <cntvoice>518-402-8883</cntvoice>
+                <cntemail>wildlife@dec.ny.gov</cntemail>
+            </cntinfo>
+        </ptcontac>
+        <native>Version 6.2 (Build 9200) ; Esri ArcGIS 10.7.1.11595</native>
+    </idinfo>
+    <spdoinfo>
+        <direct>Vector</direct>
+        <ptvctinf>
+            <sdtsterm>
+                <sdtstype>GT-polygon composed of chains</sdtstype>
+                <ptvctcnt>92</ptvctcnt>
+            </sdtsterm>
+        </ptvctinf>
+    </spdoinfo>
+    <eainfo>
+        <detailed>
+            <enttyp>
+                <enttypl>Wildlife Management Unit - New York State (NYSDEC)</enttypl>
+                <enttypd>Polygon Feature Class</enttypd>
+                <enttypds>ESRI</enttypds>
+            </enttyp>
+            <attr>
+                <attrlabl>OBJECTID</attrlabl>
+                <attrdef>Internal feature number.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Sequential unique whole numbers that are automatically generated.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>UNIT</attrlabl>
+                <attrdef>The number of the Wildlife Management Unit.</attrdef>
+                <attrdefs>NYSDEC</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <codesetd>
+                                                						
+                        
+                        <codesetn>Wildlife Management Unit Number</codesetn>
+                                                						
+                        
+                        <codesets>NYSDEC</codesets>
+                                                					
+                    
+                    </codesetd>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>UNITSQMILES</attrlabl>
+                <attrdef>The area of the Unit in square miles (area of water bodies NOT subtracted).</attrdef>
+                <attrdefs>NYSDEC</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <rdom>
+                                                						
+                        
+                        <rdommin>104</rdommin>
+                                                						
+                        
+                        <rdommax>3086</rdommax>
+                                                						
+                        
+                        <attrunit>Square Miles</attrunit>
+                                                					
+                    
+                    </rdom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>SHAPE</attrlabl>
+                <attrdef>Feature geometry.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Coordinates defining the features.</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>MOREINFO</attrlabl>
+                <attrdef>More Information Link</attrdef>
+                <attrdefs>NYSDEC</attrdefs>
+            </attr>
+            <attr>
+                <attrlabl>SHAPE.AREA</attrlabl>
+                <attrdef>Area of polygon (sq meters)</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Area of polygon (sq meters)</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>SHAPE.LEN</attrlabl>
+                <attrdef>Length of polygon perimeter (meters)</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                                        					
+                    
+                    <udom>Length of polygon perimeter (meters)</udom>
+                                        				
+                
+                </attrdomv>
+            </attr>
+        </detailed>
+    </eainfo>
+    <distinfo>
+        <distliab>See access and use constraints information.</distliab>
+        <stdorder>
+            <digform>
+                <digtinfo>
+                    <formname>Feature Class</formname>
+                </digtinfo>
+                <digtopt>
+                    <onlinopt/>
+                </digtopt>
+            </digform>
+        </stdorder>
+    </distinfo>
+    <metainfo>
+        <metd>20210511</metd>
+        <metc>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>NYSDEC</cntorg>
+                    <cntper>Bureau of Wildlife</cntper>
+                </cntorgp>
+                <cntaddr>
+                    <addrtype>mailing and physical</addrtype>
+                    <address>625 Broadway</address>
+                    <city>Albany</city>
+                    <state>NY</state>
+                    <postal>12233</postal>
+                </cntaddr>
+                <cntvoice>518-402-8883</cntvoice>
+                <cntemail>wildlife@dec.ny.gov</cntemail>
+            </cntinfo>
+        </metc>
+        <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+        <metstdv>FGDC-STD-001-1998</metstdv>
+        <mettc>local time</mettc>
+    </metainfo>
+</metadata>
