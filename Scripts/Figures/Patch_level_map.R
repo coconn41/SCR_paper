@@ -5,7 +5,7 @@ library(tmaptools)
 
 tdir=tempdir()
 
-for(i in 1:12){
+for(i in 1:13){
   metric2 = read_sf(paste0(getwd(),'/Data/Output_data/SCR/Patch/Metric_results',i,'.shp'))
 if(i==1){metric = read_sf(paste0(getwd(),'/Data/Output_data/SCR/Patch/Metric_results',i,'.shp'))}
 if(i>1){metric = rbind(metric,metric2)}
