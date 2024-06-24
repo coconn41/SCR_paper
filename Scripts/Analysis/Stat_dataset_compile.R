@@ -5,7 +5,7 @@ source(paste0(getwd(),'/Scripts/Universal/Load_libraries.R'))
 #####
 # Load wmus and deer data:
 #####
-wmus = read_sf(paste0(getwd(),"/Data/Input_data/Wildlife_Management_Units_5181502506492967745/Wildlife_Management_Units.shp")) %>%
+wmus = read_sf(paste0(getwd(),"/Data/Input_data/WMUS/Wildlife_Management_Units.shp")) %>%
   st_transform(.,32618)
 deer_data <- read_excel(paste0(getwd(),"/Data/Input_data/Deer_data.xlsx"))
 names(deer_data)[1]="UNIT"
