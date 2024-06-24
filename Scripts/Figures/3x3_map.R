@@ -204,6 +204,14 @@ for(i in unique(selected_polys)){
   MM = merged_df %>% st_drop_geometry() %>%
     filter(layer==selected_polys[ind]) #%>%
     #dplyr::select(small_metric)
+  bb1 = merged_df %>% 
+    filter(layer %in% c(nodelistfin)) %>%
+    st_union() %>%
+    tmaptools::bb_poly() %>%
+    st_area()
+  bb1 = set_units(bb1,ha)
+  attributes(bb1)=NULL
+if(!ind%in%c(4,6,8)){    
   map = tm_shape(merged_df %>% filter(layer %in% c(nodelistfin))) +
     tm_polygons(alpha=.45,col='grey80')+#col='i_area',
     # breaks=c(1000000,2000000,3000000,4000000,
@@ -218,16 +226,113 @@ for(i in unique(selected_polys)){
     tm_shape(lcp_network2)+
     tm_lines(col='black',lwd=3)+
     tm_shape(lcp_network2 %>% arrange(inv_sinuosity))+
-    tm_lines(col='inv_sinuosity',lwd=2,
+    tm_lines(col='inv_sinuosity',
+             legend.col.show = F,
+             lwd=2,
              breaks=c(.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1),
-             palette = get_brewer_pal("Blues",n=13))+#viridis::viridis(n=6,direction = 1)
+             palette = get_brewer_pal("Blues",n=13))+
     tm_shape(merged_df %>% filter(layer==selected_polys[ind]))+
-    tm_polygons(col="red",border.col = 'black')+
+    tm_polygons(col="red",
+                border.col = 'black')+
+    tm_add_legend(title = paste0(round(bb1)," ha"))+
     tm_credits(text=paste0("SCR = ",round(text,4)),
                size=1,position = c('center','BOTTOM'))+
-    tm_layout(legend.show = F,main.title.size = .75,attr.outside = T,attr.outside.position = 'bottom',
-              main.title = titledf[ind])
-  
+    tm_layout(legend.position=c(.7,.85),
+              main.title.size = .75,
+              attr.outside = T,
+              attr.outside.position = 'bottom',
+              main.title = titledf[ind])}
+if(ind==4){map = tm_shape(merged_df %>% filter(layer %in% c(nodelistfin))) +
+    tm_polygons(alpha=.45,col='grey80')+#col='i_area',
+    # breaks=c(1000000,2000000,3000000,4000000,
+    #          5000000,7500000,20000000))+
+    #tm_borders(alpha=.45,col='black')+
+    tm_shape(st_centroid(merged_df %>% filter(layer %in% c(nodelistfin))))+
+    tm_dots(size=.05)+
+    #tm_shape(line_df %>% 
+    #           filter(origin_ID==i|
+    #                    destination_ID==i))+
+    #tm_lines(col='blue',lwd=2)+
+    tm_shape(lcp_network2)+
+    tm_lines(col='black',lwd=3)+
+    tm_shape(lcp_network2 %>% arrange(inv_sinuosity))+
+    tm_lines(col='inv_sinuosity',
+             legend.col.show = F,
+             lwd=2,
+             breaks=c(.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1),
+             palette = get_brewer_pal("Blues",n=13))+
+    tm_shape(merged_df %>% filter(layer==selected_polys[ind]))+
+    tm_polygons(col="red",
+                border.col = 'black')+
+    tm_add_legend(title = paste0(round(bb1)," ha"))+
+    tm_credits(text=paste0("SCR = ",round(text,4)),
+               size=1,position = c('center','BOTTOM'))+
+    tm_layout(legend.position=c(.72,.85),
+              main.title.size = .75,
+              attr.outside = T,
+              attr.outside.position = 'bottom',
+              main.title = titledf[ind])}
+if(ind==6){    
+    map = tm_shape(merged_df %>% filter(layer %in% c(nodelistfin))) +
+      tm_polygons(alpha=.45,col='grey80')+#col='i_area',
+      # breaks=c(1000000,2000000,3000000,4000000,
+      #          5000000,7500000,20000000))+
+      #tm_borders(alpha=.45,col='black')+
+      tm_shape(st_centroid(merged_df %>% filter(layer %in% c(nodelistfin))))+
+      tm_dots(size=.05)+
+      #tm_shape(line_df %>% 
+      #           filter(origin_ID==i|
+      #                    destination_ID==i))+
+      #tm_lines(col='blue',lwd=2)+
+      tm_shape(lcp_network2)+
+      tm_lines(col='black',lwd=3)+
+      tm_shape(lcp_network2 %>% arrange(inv_sinuosity))+
+      tm_lines(col='inv_sinuosity',
+               legend.col.show = F,
+               lwd=2,
+               breaks=c(.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1),
+               palette = get_brewer_pal("Blues",n=13))+
+      tm_shape(merged_df %>% filter(layer==selected_polys[ind]))+
+      tm_polygons(col="red",
+                  border.col = 'black')+
+      tm_add_legend(title = paste0(round(bb1)," ha"))+
+      tm_credits(text=paste0("SCR = ",round(text,4)),
+                 size=1,position = c('center','BOTTOM'))+
+      tm_layout(legend.position=c(.35,.85),
+                main.title.size = .75,
+                attr.outside = T,
+                attr.outside.position = 'bottom',
+                main.title = titledf[ind])}
+if(ind==8){map = tm_shape(merged_df %>% filter(layer %in% c(nodelistfin))) +
+    tm_polygons(alpha=.45,col='grey80')+#col='i_area',
+    # breaks=c(1000000,2000000,3000000,4000000,
+    #          5000000,7500000,20000000))+
+    #tm_borders(alpha=.45,col='black')+
+    tm_shape(st_centroid(merged_df %>% filter(layer %in% c(nodelistfin))))+
+    tm_dots(size=.05)+
+    #tm_shape(line_df %>% 
+    #           filter(origin_ID==i|
+    #                    destination_ID==i))+
+    #tm_lines(col='blue',lwd=2)+
+    tm_shape(lcp_network2)+
+    tm_lines(col='black',lwd=3)+
+    tm_shape(lcp_network2 %>% arrange(inv_sinuosity))+
+    tm_lines(col='inv_sinuosity',
+             legend.col.show = F,
+             lwd=2,
+             breaks=c(.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1),
+             palette = get_brewer_pal("Blues",n=13))+
+    tm_shape(merged_df %>% filter(layer==selected_polys[ind]))+
+    tm_polygons(col="red",
+                border.col = 'black')+
+    tm_add_legend(title = paste0(round(bb1)," ha"))+
+    tm_credits(text=paste0("SCR = ",round(text,4)),
+               size=1,position = c('center','BOTTOM'))+
+    tm_layout(legend.position=c(.675,.85),
+              main.title.size = .75,
+              attr.outside = T,
+              attr.outside.position = 'bottom',
+              main.title = titledf[ind])}
   
   assign(paste0("map_",ind),map)    
 }
@@ -236,7 +341,7 @@ full_map=tmap_arrange(map_1,map_2,map_3,
                       map_4,map_5,map_6,
                       map_7,map_8,map_9,
                       ncol=3)
-full_map
+#full_map
 
 tmap_save(full_map,
           filename=paste0(getwd(),"/Figures/3_3_example.jpeg"),dpi=300)
