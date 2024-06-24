@@ -63,7 +63,8 @@ aes(x=value,group=`WMU type`,fill=`WMU type`))+
   theme_bw()+
   scale_fill_manual(values=c("#E7298A","#1B9E77"))+
   ylab("Density")+
-  xlab("Metric value");densities
+  xlab("Metric value")+
+  theme(text=element_text(size=15));densities
 
 ggsave(densities,
        filename = paste0(getwd(),'/Figures/Densities.jpeg'),
