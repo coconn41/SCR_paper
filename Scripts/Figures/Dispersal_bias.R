@@ -71,6 +71,52 @@ fin_poly = poly2
 wmu_nodes = st_centroid(fin_poly)
 cp_fin_poly = fin_poly
 
+# SCR
+cores = 4
+distance = 1675
+Central_park$area = st_area(Central_park);Central_park$area
+Central_park$area = set_units(Central_park$area,ha);Central_park$area
+attributes(Central_park$area)=NULL
+template = Central_park
+wmus = Central_park
+sing_wmu = Central_park
+source(paste0(getwd(),"/Scripts/SCR/Roadway_data_cleaning.R"))
+source(paste0(getwd(),"/Scripts/SCR/Alpine_ecozone_cleaning.R"))
+source(paste0(getwd(),"/Scripts/Universal/Process_nodes.R"))
+source(paste0(getwd(),"/Scripts/SCR/Resistance_raster_processing.R"))
+source(paste0(getwd(),"/Scripts/SCR/Within_distance_comps.R"))
+source(paste0(getwd(),"/Scripts/SCR/Landscape_network.R"))
+source(paste0(getwd(),"/Scripts/SCR/Get_euclidean_distances.R"))
+names(sinuosity_df)[1]="layer"
+names(sinuosity_df)[2]="layer.1"
+
+combdf = left_join(fin_poly,
+                   sinuosity_df,
+                   by=c('layer')) %>%
+  left_join(.,fin_poly %>% st_drop_geometry(),
+            by=c('layer.1'='layer')) %>%
+  rename('i_area' = 'area.x',
+         'j_area' = 'area.y')
+
+final_metric_CP = combdf %>%
+  mutate(sijaj = inv_sinuosity*j_area) %>%
+  st_drop_geometry() %>%
+  dplyr::select(-c(geometry.x,geometry.y)) %>%
+  group_by(layer) %>%
+  summarize(sijaj_sum = sum(sijaj,na.rm=T)) %>%
+  ungroup() %>%
+  left_join(.,fin_poly %>%
+              st_drop_geometry(),
+            by='layer') %>%
+  mutate(numerator = sijaj_sum+area) %>%
+  summarize(numerator_sum = sum(sijaj_sum,na.rm=T))
+
+metric_fin_CP = data.frame(UNIT = "Central Park",
+                                  wmu_type = "normal",
+                                  index = "SCR",
+                                  value = as.numeric(final_metric_CP)/(nrow(fin_poly)*sing_wmu$area)) 
+
+#
 
 comb_mat = matrix(nrow=nrow(wmu_nodes),
                   ncol = nrow(wmu_nodes))  
@@ -199,6 +245,10 @@ size_change_result = data.frame(UNIT = rep("Increased_size",4),
                                           sum(numerator$act_numerator*2)/(Manhattan_Area^2),
                                           sqrt(sum(numerator$act_numerator)),
                                           sqrt(sum(numerator$act_numerator*2))))
+metric_fin_increased_size = data.frame(UNIT = "Increased_size",
+                           wmu_type = "normal",
+                           index = "SCR",
+                           value = as.numeric(final_metric_CP)/(nrow(fin_poly)*Manhattan_Area)) 
 
 #####
 # Do for all of Manhattan
@@ -231,6 +281,50 @@ attributes(poly2$area)=NULL
 fin_poly = poly2
 wmu_nodes = st_centroid(fin_poly)
 Man_fin_poly = fin_poly
+# SCR
+cores = 4
+distance = 1675
+Manhattan$area = st_area(Manhattan)
+Manhattan$area = set_units(Manhattan$area,ha)
+attributes(Manhattan$area)=NULL
+template = Manhattan
+wmus = Manhattan
+sing_wmu = Manhattan
+source(paste0(getwd(),"/Scripts/SCR/Roadway_data_cleaning.R"))
+source(paste0(getwd(),"/Scripts/SCR/Alpine_ecozone_cleaning.R"))
+source(paste0(getwd(),"/Scripts/Universal/Process_nodes.R"))
+source(paste0(getwd(),"/Scripts/SCR/Resistance_raster_processing.R"))
+source(paste0(getwd(),"/Scripts/SCR/Within_distance_comps.R"))
+source(paste0(getwd(),"/Scripts/SCR/Landscape_network.R"))
+source(paste0(getwd(),"/Scripts/SCR/Get_euclidean_distances.R"))
+names(sinuosity_df)[1]="layer"
+names(sinuosity_df)[2]="layer.1"
+
+combdf = left_join(fin_poly,
+                   sinuosity_df,
+                   by=c('layer')) %>%
+  left_join(.,fin_poly %>% st_drop_geometry(),
+            by=c('layer.1'='layer')) %>%
+  rename('i_area' = 'area.x',
+         'j_area' = 'area.y')
+
+final_metric = combdf %>%
+  mutate(sijaj = inv_sinuosity*j_area) %>%
+  st_drop_geometry() %>%
+  dplyr::select(-c(geometry.x,geometry.y)) %>%
+  group_by(layer) %>%
+  summarize(sijaj_sum = sum(sijaj,na.rm=T)) %>%
+  ungroup() %>%
+  left_join(.,fin_poly %>%
+              st_drop_geometry(),
+            by='layer') %>%
+  mutate(numerator = sijaj_sum+area) %>%
+  summarize(numerator_sum = sum(sijaj_sum,na.rm=T))
+
+metric_fin_Manhattan = data.frame(UNIT = "Manhattan",
+                                  wmu_type = "normal",
+                                  index = "SCR",
+                                  value = as.numeric(final_metric)/(nrow(fin_poly)*sing_wmu$area)) 
 
 
 comb_mat = matrix(nrow=nrow(wmu_nodes),
@@ -345,10 +439,13 @@ result_df2 = data.frame(UNIT = rep("Manhattan",4),
 
 
 full_results = rbind(result_df,result_df2) %>%
-  rbind(.,size_change_result)
+  rbind(.,size_change_result) %>%
+  rbind(.,metric_fin_CP) %>%
+  rbind(.,metric_fin_Manhattan) %>%
+  rbind(.,metric_fin_increased_size)
 
 m1=tm_shape(Central_park)+tm_borders()+tm_shape(cp_fin_poly)+tm_polygons(col='forestgreen')+
-  tm_credits(text = "PC = 4.94e-4\nECA = 7.636",
+  tm_credits(text = "PC = 4.94e-4\nSCR = 1.28e-2\nECA = 7.636",
              size=1,position=c('left','top'));m1
 #tm_scale_bar(position=c('right','bottom'),
 #             text.size=1,widbreaks = NULL)
@@ -358,7 +455,7 @@ m2 = tm_shape(Manhattan)+tm_borders()+
   tm_borders(alpha=.5)+
   tm_shape(cp_fin_poly)+
   tm_polygons(col='forestgreen')+
-  tm_credits(text = "PC = 8.47e-7\nECA = 7.636",
+  tm_credits(text = "PC = 8.47e-7\nSCR = 5.30e-4\nECA = 7.636",
              size = 1,position = c('left','top'))+
   tm_scale_bar(position=c('right','bottom'),text.size = 1);m2
 
