@@ -17,8 +17,8 @@ wmus = read_sf(paste0(getwd(),"/Data/Input_data/WMUs/Wildlife_Management_Units.s
 template = read_sf(paste0(getwd(),'/Data/Input_data/cb_2018_us_state_500k.shp')) %>%
   filter(NAME == "New York")
 use_cached_LC = TRUE
-if(used_cached_LC==FALSE){source(paste0(getwd(),"/Scripts/Universal/Land_cover_download.R"))}
-if(used_cached_LC==TRUE){LC = rast(paste0(getwd(),'/Data/Input_data/NYS NLCD_NLCD_Land_Cover_2019.tif'))
+if(use_cached_LC==FALSE){source(paste0(getwd(),"/Scripts/Universal/Land_cover_download.R"))}
+if(use_cached_LC==TRUE){LC = raster::raster(paste0(getwd(),'/Data/Input_data/NYS NLCD_NLCD_Land_Cover_2019.tif'))
 LCr = rast(LC)
 LCproj = terra::project(LCr,crs(template))
 
