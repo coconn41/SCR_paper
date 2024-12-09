@@ -12,7 +12,7 @@ buff_unbuff = "Buffered"
 #####
 # WMU Shapefile and Land Cover Download:
 #####
-wmus = read_sf(paste0(getwd(),"/Data/Input_data/Wildlife_Management_Units_5181502506492967745/Wildlife_Management_Units.shp"))
+wmus = read_sf(paste0(getwd(),"/Data/Input_data/WMUs/Wildlife_Management_Units.shp"))
 
 source(paste0(getwd(),"/Scripts/Universal/Land_cover_download.R"))
 
