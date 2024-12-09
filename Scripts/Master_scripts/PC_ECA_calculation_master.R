@@ -1,3 +1,5 @@
+#set wd
+setwd("/user/collinoc/SCR_paper/")
 #####
 # Load libraries:
 #####
