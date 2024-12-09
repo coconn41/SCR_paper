@@ -14,10 +14,11 @@ buff_unbuff = "Buffered"
 # WMU Shapefile and Land Cover Download:
 #####
 wmus = read_sf(paste0(getwd(),"/Data/Input_data/WMUs/Wildlife_Management_Units.shp"))
-
+template = read_sf(paste0(getwd(),'/Data/Input_data/cb_2018_us_state_500k.shp')) %>%
+  filter(NAME == "New York")
 source(paste0(getwd(),"/Scripts/Universal/Land_cover_download.R"))
 
-NYS_LC = get_nlcd(template = NYS %>%
+NYS_LC = get_nlcd(template = template %>%
                     st_transform(.,crs=st_crs(wmus)),
          year = 2019,
          landmass = 'L48',
