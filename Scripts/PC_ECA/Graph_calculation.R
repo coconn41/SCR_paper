@@ -1,5 +1,5 @@
 g=igraph::graph_from_data_frame(numerator,directed=TRUE,vertices = NULL)
-E(g)$weight = 1/(numerator$product_prob)
+E(g)$weight = (numerator$product_prob)
 myCluster <- parallel::makeCluster(cores)
 doParallel::registerDoParallel(myCluster)
 full_max_df <- foreach::foreach(a = 1:nrow(wmu_nodes),

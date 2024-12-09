@@ -16,7 +16,6 @@ numerator <- foreach::foreach(a = 1:nrow(combinations),
                                 return(combodf)
                               }
 parallel::stopCluster(myCluster)
-unregister_dopar()
 attributes(numerator$distance)=NULL
 numerator$product_prob=exp(-.001788497*numerator$distance)
 numerator$max_distance = NA
