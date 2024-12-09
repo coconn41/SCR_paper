@@ -16,17 +16,16 @@ buff_unbuff = "Buffered"
 wmus = read_sf(paste0(getwd(),"/Data/Input_data/WMUs/Wildlife_Management_Units.shp"))
 template = read_sf(paste0(getwd(),'/Data/Input_data/cb_2018_us_state_500k.shp')) %>%
   filter(NAME == "New York")
-source(paste0(getwd(),"/Scripts/Universal/Land_cover_download.R"))
+use_cached_LC = TRUE
+if(used_cached_LC==FALSE){source(paste0(getwd(),"/Scripts/Universal/Land_cover_download.R"))}
+if(used_cached_LC==TRUE){LC = rast(paste0(getwd(),'/Data/Input_data/NYS NLCD_NLCD_Land_Cover_2019.tif'))
+LCr = rast(LC)
+LCproj = terra::project(LCr,crs(template))
 
-NYS_LC = get_nlcd(template = template %>%
-                    st_transform(.,crs=st_crs(wmus)),
-         year = 2019,
-         landmass = 'L48',
-         label = "Forests")
-
-LCr = rast(NYS_LC)
-wmus = st_transform(wmus,crs(LCr))
-LCproj = terra::project(LCr,crs(wmus))
+LCcrop = terra::crop(x = LCproj,
+                     y = template |>
+                       terra::vect(),
+                     mask = T)}
 
 #####
 # Loop through analysis
