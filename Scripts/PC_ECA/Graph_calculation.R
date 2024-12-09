@@ -3,7 +3,7 @@ E(g)$weight = (numerator$product_prob)
 myCluster <- parallel::makeCluster(cores)
 doParallel::registerDoParallel(myCluster)
 full_max_df <- foreach::foreach(a = 1:nrow(wmu_nodes),
-                                .verbose = TRUE,
+                                .verbose = FALSE,
                                 .errorhandling = "remove",
                                 .combine = "rbind",
                                 .packages = c("sf","raster","dplyr","terra","igraph","units")) %dopar% {

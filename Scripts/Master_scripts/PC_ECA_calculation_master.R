@@ -32,9 +32,16 @@ LCcrop = terra::crop(x = LCproj,
 #####
 # Loop through analysis
 #####
-
+if(buff_unbuff=="Buffered"){
+remainingWMUS = subset(unique(wmus$UNIT),
+                       !unique(wmus$UNIT)%in%substring(list.files(paste0(getwd(),'/Data/Output_data/PC_ECA/Buffered/')),
+                          10,11))}
+if(buff_unbuff!="Buffered"){
+  remainingWMUS = subset(unique(wmus$UNIT),
+                         !unique(wmus$UNIT)%in%substring(list.files(paste0(getwd(),'/Data/Output_data/PC_ECA/Buffered/')),
+                                                         12,13))}
 xind=0
-for(x in unique(wmus$UNIT)){
+for(x in remainingWMUS){
   print(paste0(xind,"_",x))
   xind=xind+1
   sing_wmu = wmus %>% filter(UNIT==x) 
