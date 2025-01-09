@@ -11,7 +11,7 @@ tdir = tempdir()
 cores = 48
 distance = 1675 # For home-range buffering and SCR threshold distance
 theta = .001788497 # Theta in PC / ECA index calculation
-buff_unbuff = "Buffered"
+buff_unbuff = "Unbuffered"
 #####
 # WMU Shapefile and Land Cover Download:
 #####
