@@ -38,7 +38,7 @@ remainingWMUS = subset(unique(wmus$UNIT),
                           10,11))}
 if(buff_unbuff!="Buffered"){
   remainingWMUS = subset(unique(wmus$UNIT),
-                         !unique(wmus$UNIT)%in%substring(list.files(paste0(getwd(),'/Data/Output_data/PC_ECA/Buffered/')),
+                         !unique(wmus$UNIT)%in%substring(list.files(paste0(getwd(),'/Data/Output_data/PC_ECA/Unbuffered/')),
                                                          12,13))}
 xind=0
 for(x in remainingWMUS){
