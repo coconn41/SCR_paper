@@ -49,6 +49,7 @@ m2=tm_shape(NYS %>%
   tm_borders()+
   tm_shape(box2)+
   tm_borders()+
+  tm_scale_bar(position=c('left','top'))+
   tm_layout(legend.position=c('left','top'))
 
 ADK_polys = st_intersection(metric,box)

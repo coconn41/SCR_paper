@@ -446,7 +446,8 @@ full_results = rbind(result_df,result_df2) %>%
 
 m1=tm_shape(Central_park)+tm_borders()+tm_shape(cp_fin_poly)+tm_polygons(col='forestgreen')+
   tm_credits(text = "PC = 4.94e-4\nSCR = 1.28e-2\nECA = 7.636",
-             size=1,position=c('left','top'));m1
+             size=1,position=c('left','top'))+
+  tm_scale_bar(position=c('right','bottom'),text.size = 1);m1
 #tm_scale_bar(position=c('right','bottom'),
 #             text.size=1,widbreaks = NULL)
 

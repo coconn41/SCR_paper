@@ -21,7 +21,8 @@ SCRmap = tm_shape(left_join(metric_data %>%
               title="Sinuous Connection Reduction",
               palette=tmaptools::get_brewer_pal("Greens"))+
   tm_layout(main.title='C',
-            legend.title.size = 1.5)
+            legend.title.size = 1.5)+
+  tm_scale_bar(position=c('left','bottom'))
 
 #####
 # Make PC map:
@@ -36,7 +37,8 @@ PCmap = tm_shape(left_join(metric_data %>%
               title="Probability of Connectivity",
               palette=tmaptools::get_brewer_pal("Greens"))+
   tm_layout(main.title="A",
-            legend.title.size = 1.5)
+            legend.title.size = 1.5)+
+  tm_scale_bar(position=c('left','bottom'))
 
 #####
 # Make ECA map:
@@ -50,7 +52,8 @@ ECAmap = tm_shape(left_join(metric_data %>%
               title="Equivalent Connected Area",
               palette=tmaptools::get_brewer_pal("Greens"))+
   tm_layout(main.title="B",
-            legend.title.size = 1.5)
+            legend.title.size = 1.5)+
+  tm_scale_bar(position=c('left','bottom'))
 
 #####
 # Make Forested Area map:
@@ -86,7 +89,8 @@ LCmap = tm_shape(wmus %>% st_union())+
                 col="#00441B",
                 labels = "Forested Area")+
   tm_layout(main.title="D",
-            legend.position = c('left','top'))
+            legend.position = c('left','top'))+
+  tm_scale_bar(position=c('left','bottom'))
 
 #####
 # Arrange maps:

@@ -234,10 +234,11 @@ if(!ind%in%c(4,6,8)){
     tm_shape(merged_df %>% filter(layer==selected_polys[ind]))+
     tm_polygons(col="red",
                 border.col = 'black')+
-    tm_add_legend(title = paste0(round(bb1)," ha"))+
+    tm_scale_bar(position=c(.7,.85))+
+    #tm_add_legend(title = paste0(round(bb1)," ha"))+
     tm_credits(text=paste0("SCR = ",round(text,4)),
                size=1,position = c('center','BOTTOM'))+
-    tm_layout(legend.position=c(.7,.85),
+    tm_layout(#legend.position=c(.7,.85),
               main.title.size = .75,
               attr.outside = T,
               attr.outside.position = 'bottom',
@@ -264,10 +265,11 @@ if(ind==4){map = tm_shape(merged_df %>% filter(layer %in% c(nodelistfin))) +
     tm_shape(merged_df %>% filter(layer==selected_polys[ind]))+
     tm_polygons(col="red",
                 border.col = 'black')+
-    tm_add_legend(title = paste0(round(bb1)," ha"))+
+  tm_scale_bar(position=c(.72,.85))+
+    #tm_add_legend(title = paste0(round(bb1)," ha"))+
     tm_credits(text=paste0("SCR = ",round(text,4)),
                size=1,position = c('center','BOTTOM'))+
-    tm_layout(legend.position=c(.72,.85),
+    tm_layout(#legend.position=c(.72,.85),
               main.title.size = .75,
               attr.outside = T,
               attr.outside.position = 'bottom',
@@ -295,10 +297,11 @@ if(ind==6){
       tm_shape(merged_df %>% filter(layer==selected_polys[ind]))+
       tm_polygons(col="red",
                   border.col = 'black')+
-      tm_add_legend(title = paste0(round(bb1)," ha"))+
+      tm_scale_bar(position=c(.25,.85))+
+      #tm_add_legend(title = paste0(round(bb1)," ha"))+
       tm_credits(text=paste0("SCR = ",round(text,4)),
                  size=1,position = c('center','BOTTOM'))+
-      tm_layout(legend.position=c(.35,.85),
+      tm_layout(#legend.position=c(.35,.85),
                 main.title.size = .75,
                 attr.outside = T,
                 attr.outside.position = 'bottom',
@@ -325,10 +328,11 @@ if(ind==8){map = tm_shape(merged_df %>% filter(layer %in% c(nodelistfin))) +
     tm_shape(merged_df %>% filter(layer==selected_polys[ind]))+
     tm_polygons(col="red",
                 border.col = 'black')+
-    tm_add_legend(title = paste0(round(bb1)," ha"))+
+  tm_scale_bar(position=c(.675,.85))+
+   # tm_add_legend(title = paste0(round(bb1)," ha"))+
     tm_credits(text=paste0("SCR = ",round(text,4)),
                size=1,position = c('center','BOTTOM'))+
-    tm_layout(legend.position=c(.675,.85),
+    tm_layout(#legend.position=c(.675,.85),
               main.title.size = .75,
               attr.outside = T,
               attr.outside.position = 'bottom',

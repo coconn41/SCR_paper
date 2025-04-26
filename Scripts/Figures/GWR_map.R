@@ -46,7 +46,8 @@ custom_parameter_map=tm_shape(custom_params)+
               title="Sinuous Connection Reduction")+
   tm_layout(main.title="C",
             legend.title.size = 1.5,
-            legend.text.size = .9)
+            legend.text.size = .9)+
+  tm_scale_bar(position=c('left','bottom'))
 
 #####
 # Generate PC GWR map:
@@ -89,7 +90,8 @@ PC_parameter_map=tm_shape(PC_params)+
               title="Probability of Connectivity")+
   tm_layout(legend.title.size=1.5,
             main.title = "A",
-            legend.text.size = .9)
+            legend.text.size = .9)+
+  tm_scale_bar(position=c('left','bottom'))
 
 #####
 # Generate ECA GWR map:
@@ -126,7 +128,8 @@ ECA_parameter_map=tm_shape(ECA_params)+
               title="Equivalent Connected Area")+
   tm_layout(main.title="B",
             legend.title.size=1.5,
-            legend.text.size = .9)
+            legend.text.size = .9)+
+  tm_scale_bar(position=c('left','bottom'))
 
 #####
 # Generate average deer take density map:
@@ -141,7 +144,8 @@ Deer_take_map=tm_shape(avg_deer_take)+
               title="Average yearly deer\ntake per hectare")+
   tm_layout(main.title="D",
             legend.title.size = 1.5,
-            legend.text.size = .9)
+            legend.text.size = .9)+
+  tm_scale_bar(position=c('left','bottom'))
 
 #####
 # Compile all maps 
