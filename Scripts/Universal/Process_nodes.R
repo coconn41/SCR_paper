@@ -4,7 +4,7 @@ values(LC_forest_patches)[values(LC_forest_patches)==43] = 41
 values(LC_forest_patches)[values(LC_forest_patches)!=41] = NA
 
 y = get_patches(LC_forest_patches,directions=4)#patches(LC_forest_patches,directions=4)
-poly1 = as.polygons(terra::rast(y$layer_1$class_41))
+poly1 = as.polygons(y$layer_1$class_41)
 poly2 = st_as_sf(poly1)
 poly2$area = st_area(poly2)
 poly2$area = set_units(poly2$area,ha)

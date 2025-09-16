@@ -58,3 +58,6 @@ library(ggplot2)
 if(!require('viridis')){
   install.packages('viridis')}
 library(viridis)
+if(!require('graph4lg')){
+  library(graph4lg)
+}

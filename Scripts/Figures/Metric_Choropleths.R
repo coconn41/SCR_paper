@@ -58,33 +58,45 @@ ECAmap = tm_shape(left_join(metric_data %>%
 #####
 # Make Forested Area map:
 #####
-LC = get_nlcd(template=st_union(wmus) %>%
-                st_simplify(.,dTolerance=500),
-              label="NYS NLCD",
-              dataset='landcover',
-              year=2019,
-              landmass = 'L48',
-              force.redo = T,
-              extraction.dir = tdir)
-LCr = rast(LC)
-LCproj = terra::project(LCr,crs(wmus))
-
+# LC = get_nlcd(template= st_union(wmus) %>%
+#                 st_simplify(.,dTolerance=500),
+#               label="NYS NLCD",
+#               dataset='landcover',
+#               year=2019,
+#               landmass = 'L48',
+#               force.redo = T,
+#               extraction.dir = tdir)
+#LCr = rast(LC)
+LC2 = terra::rast(paste0(getwd(),"/Data/Input_data/NYS NLCD_NLCD_Land_Cover_2019.tif"))
+LCproj = terra::project(LC2,crs(vect(wmus))) 
 LCcrop = terra::crop(x = LCproj,
-                     y = wmus |>
-                       terra::vect(),
-                     mask = T)
+                     y = wmus |> # this was wmus
+                       terra::vect() |>
+                       terra::rast())
+# LCmask = LCproj %>%
+#   terra::mask(wmus %>%
+#                 terra::vect())
+
 
 LC_forest_patches = LCcrop
 values(LC_forest_patches)[values(LC_forest_patches)==42] = 41
 values(LC_forest_patches)[values(LC_forest_patches)==43] = 41
 values(LC_forest_patches)[values(LC_forest_patches)!=41] = NA
 
-LCmap = tm_shape(wmus %>% st_union())+
-  tm_borders()+
+trickery = wmus %>%
+  st_union() %>%
+  st_simplify() %>%
+  st_buffer(dist = 300000) %>%
+  st_difference(.,st_union(wmus))
+
+LCmap = #tm_shape(wmus %>% st_union())+
+  #tm_borders()+
   tm_shape(LC_forest_patches)+
   tm_raster(legend.show=F,
-            col = "NLCD.Land.Cover.Class",
+            #col = "NLCD.Land.Cover.Class",
             palette="#00441B")+
+  tm_shape(trickery)+
+  tm_polygons(col='white')+
   tm_add_legend(type='fill',
                 col="#00441B",
                 labels = "Forested Area")+
@@ -103,5 +115,5 @@ tmar = tmap_arrange(PCmap,ECAmap,SCRmap,LCmap,
 #####
 
 tmap_save(tmar,
-          filename=paste0(getwd(),'/Figures/Metric_maps.jpeg'),
+          filename=paste0(getwd(),'/Figures/Metric_maps_scalebar.jpeg'),
           dpi = 300)

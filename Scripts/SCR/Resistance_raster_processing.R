@@ -15,8 +15,8 @@ values(LC_wetland)[values(LC_wetland)%in%wetland_values] = 100
 
 LC_water = LCcrop
 water_values = c(11)
-values(LC_water)[!(values(LC_water)%in%wetland_values)] = 0
-values(LC_water)[values(LC_water)%in%wetland_values] = 1000
+values(LC_water)[!(values(LC_water)%in%water_values)] = 0
+values(LC_water)[values(LC_water)%in%water_values] = 1000
 
 LC_high_developed = LCcrop
 high_developed_values = c(24)
@@ -54,6 +54,8 @@ Resistance_grid = sum(Resistance_grid,LC_low_developed,na.rm=T)
 Resistance_grid = sum(Resistance_grid,alpine_pix,na.rm=T)
 Resistance_grid = sum(Resistance_grid,Highways,na.rm=T)
 Resistance_grid = sum(Resistance_grid,minor_roads,na.rm=T)
-Resistance_grid[Resistance_grid==0]=NA
+Resistance_grid[Resistance_grid==0]=1000000 # This was NA, changed for graphab
+if(Conductance_resistance=="Conductance"){
 Resistance_grid=1/Resistance_grid # These are now conductances, the inverse was taken
+}
 Rgrid = raster::raster(Resistance_grid) 

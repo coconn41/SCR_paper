@@ -109,3 +109,4 @@ for(i in min(spatial_reg_dat$huntyear):max(spatial_reg_dat$huntyear)){
 mean_params = gwr_plot_dat %>%
   group_by(UNIT,index) %>%
   summarize(mn_params = mean(params,na.rm=T)) 
+

@@ -49,8 +49,8 @@ m2=tm_shape(NYS %>%
   tm_borders()+
   tm_shape(box2)+
   tm_borders()+
-  tm_scale_bar(position=c('left','top'))+
-  tm_layout(legend.position=c('left','top'))
+  tm_layout(legend.position=c(.01,.75))+
+  tm_scale_bar(position=c('left','top'))
 
 ADK_polys = st_intersection(metric,box)
 Cat_polys = st_intersection(metric,box2)
@@ -87,5 +87,5 @@ insetlist=list(inset1,inset2)
 tmap_save(m2,
           insets_tm = insetlist,
           insets_vp = vplist,
-          filename = paste0(getwd(),'/Figures/Patch_level_map_A.jpeg'),
+          filename = paste0(getwd(),'/Figures/Patch_level_map_A_scalebar.jpeg'),
           dpi=300)

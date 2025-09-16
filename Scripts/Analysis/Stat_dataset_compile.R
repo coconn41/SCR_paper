@@ -50,7 +50,7 @@ metric_data = fl2 %>%
   filter(index %in% c("PC_index_double",
                       "ECA_double",
                       "custom_LS_metric")) %>%
-  select(-X)
+  dplyr::select(-X) 
 #####
 # Build regression datasets (reg_dat and spatial_reg_dat):
 #####
@@ -70,3 +70,4 @@ reg_dat$Density = reg_dat$Total/reg_dat$area
 
 spatial_reg_dat = left_join(reg_dat,wmus,by="UNIT") %>%
   st_set_geometry(.,'geometry')
+

@@ -47,9 +47,9 @@ forests=get_nlcd(template = Central_park,
                  year = 2019,
                  label = "Forests")
 
-LCr = rast(forests)
-Central_park = st_transform(Central_park,crs(LCr))
-LCproj = terra::project(LCr,crs(Central_park))
+#LCr = rast(forests)
+Central_park = st_transform(Central_park,crs(forests))
+LCproj = terra::project(forests,crs(Central_park))
 
 LCcrop = terra::crop(x = LCproj,
                      y = Central_park %>%
@@ -62,7 +62,8 @@ values(LC_forest_patches)[values(LC_forest_patches)==43] = 41
 values(LC_forest_patches)[values(LC_forest_patches)!=41] = NA
 
 y = get_patches(LC_forest_patches,directions=4)#patches(LC_forest_patches,directions=4)
-poly1 = as.polygons(terra::rast(y$layer_1$class_41))
+#poly1 = as.polygons(terra::rast(y$layer_1$class_41))
+poly1 = as.polygons(y$layer_1$class_41)
 poly2 = st_as_sf(poly1)
 poly2$area = st_area(poly2)
 poly2$area = set_units(poly2$area,ha)
@@ -82,18 +83,135 @@ wmus = Central_park
 sing_wmu = Central_park
 source(paste0(getwd(),"/Scripts/SCR/Roadway_data_cleaning.R"))
 source(paste0(getwd(),"/Scripts/SCR/Alpine_ecozone_cleaning.R"))
-source(paste0(getwd(),"/Scripts/Universal/Process_nodes.R"))
+#source(paste0(getwd(),"/Scripts/Universal/Process_nodes.R"))
 source(paste0(getwd(),"/Scripts/SCR/Resistance_raster_processing.R"))
 source(paste0(getwd(),"/Scripts/SCR/Within_distance_comps.R"))
-source(paste0(getwd(),"/Scripts/SCR/Landscape_network.R"))
-source(paste0(getwd(),"/Scripts/SCR/Get_euclidean_distances.R"))
+#####
+# Alter landscape network
+#####
+myCluster <- parallel::makeCluster(cores)
+doParallel::registerDoParallel(myCluster)
+
+lcp_network <- foreach::foreach(i = 1:nrow(comps), .errorhandling = "remove", .combine = "rbind", .packages = c("sf","raster","gdistance","tmaptools","dplyr","leastcostpath","terra")) %dopar% {
+  
+  bbdf <- sf::st_bbox(fin_poly[c(comps[i,1],comps[i,2]),]) %>%
+    tmaptools::bb_poly(.,projection = sf::st_crs(fin_poly)) %>%
+    sf::st_as_sf()
+  
+  tr1=leastcostpath::create_cs(terra::crop(x=Rgrid %>%
+                                             terra::rast(),
+                                           y = bbdf,
+                                           mask=T))
+  
+  lcp <- leastcostpath::create_lcp(x = tr1,
+                                   origin = wmu_nodes[comps[i,1],,drop=FALSE],
+                                   destination = wmu_nodes[comps[i,2],, drop=FALSE]) %>%
+    sf::st_as_sf() %>%
+    dplyr::mutate(length = sf::st_length(.),
+                  origin_ID = fin_poly[comps[i,1],]$lyr.1,
+                  destination_ID =fin_poly[comps[i,2],]$lyr.1) #lcp$origin_ID <- comps[i,1]
+  
+  return(lcp)
+}
+
+parallel::stopCluster(myCluster)
+
+attributes(lcp_network$length) <- NULL
+lcp_network=lcp_network[,-c(1:3)]
+
+
+#####
+# Alter get euclid dist
+#####
+myCluster <- parallel::makeCluster(cores)
+doParallel::registerDoParallel(myCluster)
+
+coords <- foreach::foreach(i = 1:nrow(comps), .errorhandling = "remove", .combine = "rbind", .packages = c("sf", "terra")) %dopar% {
+  
+  
+  crds = data.frame(begin_lon = st_coordinates(st_as_sf(wmu_nodes[comps[i,1],]))[1],
+                    begin_lat = st_coordinates(st_as_sf(wmu_nodes[comps[i,1],]))[2],
+                    begin_id = wmu_nodes[comps[i,1],]$lyr.1,
+                    end_lon = st_coordinates(st_as_sf(wmu_nodes[comps[i,2],]))[1],
+                    end_lat = st_coordinates(st_as_sf(wmu_nodes[comps[i,2],]))[2],
+                    end_id = wmu_nodes[comps[i,2],]$lyr.1)
+  
+  gc()
+  
+  return(crds)
+  
+}
+parallel::stopCluster(myCluster)
+
+
+begin.coords = coords[,c(1:3)]
+names(begin.coords)=c("lon","lat","id")
+end.coords = coords[,c(4:6)]
+names(end.coords)=c("lon","lat","id")
+
+l_sf2 <- vector("list", nrow(begin.coords))
+for (i in seq_along(l_sf2)){
+  l_sf2[[i]] <- st_linestring(as.matrix(rbind(begin.coords[i,], end.coords[i,])))
+}
+
+
+line_df = st_sfc(l_sf2) %>%
+  st_as_sf() %>%
+  st_set_crs(.,st_crs(wmus)) %>%
+  mutate(origin_ID = begin.coords$id,
+         destination_ID = end.coords$id,
+         euclid_lengths = st_length(.))
+attributes(line_df$euclid_lengths)=NULL
+
+sinuosity_df = line_df %>%
+  st_drop_geometry() %>%
+  left_join(.,lcp_network,# %>% st_drop_geometry(),
+            by=c("origin_ID","destination_ID")) %>%
+  #dplyr::select(-direction),by=c("origin_ID","destination_ID")) %>%
+  mutate(length = ifelse(is.na(length)==T,0,length),
+         sinuosity = length/euclid_lengths,
+         inv_sinuosity = ifelse(length==0,0,euclid_lengths/length)) %>%
+  left_join(.,fin_poly,by=c("destination_ID"="lyr.1")) %>%
+  #mutate(mini_metric = inv_sinuosity*area) %>%
+  dplyr::select(-area)
+
+sinuosity_df2 = line_df %>%
+  st_drop_geometry() %>%
+  left_join(.,lcp_network, #%>% st_drop_geometry(),
+            by=c("origin_ID","destination_ID")) %>%
+  #dplyr::select(-direction),by=c("origin_ID","destination_ID")) %>%
+  mutate(length = ifelse(is.na(length)==T,0,length),
+         sinuosity = length/euclid_lengths,
+         inv_sinuosity = ifelse(length==0,0,euclid_lengths/length)) %>%
+  left_join(.,fin_poly,by=c("destination_ID"="lyr.1")) %>%
+  #mutate(mini_metric = inv_sinuosity*area) %>%
+  dplyr::select(-area) %>%
+  mutate(origin_ID2 = destination_ID,
+         destination_ID2 = origin_ID) %>%
+  mutate(origin_ID = origin_ID2,
+         destination_ID = destination_ID2) %>%
+  dplyr::select(-c(origin_ID2,destination_ID2))
+
+sinuosity_df = rbind(sinuosity_df,sinuosity_df2)
+
+line_df2 = st_sfc(l_sf2) %>%
+  st_as_sf() %>%
+  st_set_crs(.,st_crs(wmus)) %>%
+  mutate(origin_ID = end.coords$id,
+         destination_ID = begin.coords$id,
+         euclid_lengths = st_length(.))
+attributes(line_df2$euclid_lengths)=NULL
+
+line_df = rbind(line_df,line_df2)
+
+
 names(sinuosity_df)[1]="layer"
 names(sinuosity_df)[2]="layer.1"
 
-combdf = left_join(fin_poly,
+combdf = left_join(fin_poly %>% rename(layer = 'lyr.1'),
                    sinuosity_df,
                    by=c('layer')) %>%
-  left_join(.,fin_poly %>% st_drop_geometry(),
+  left_join(.,fin_poly %>% rename(layer = 'lyr.1') %>%st_drop_geometry(),
             by=c('layer.1'='layer')) %>%
   rename('i_area' = 'area.x',
          'j_area' = 'area.y')
@@ -106,6 +224,7 @@ final_metric_CP = combdf %>%
   summarize(sijaj_sum = sum(sijaj,na.rm=T)) %>%
   ungroup() %>%
   left_join(.,fin_poly %>%
+              rename(layer = 'lyr.1') %>%
               st_drop_geometry(),
             by='layer') %>%
   mutate(numerator = sijaj_sum+area) %>%
@@ -258,14 +377,13 @@ forests=get_nlcd(template = Manhattan,
                  year = 2019,
                  label = "Forests",force.redo = T)
 
-LCr = rast(forests)
-Manhattan = st_transform(Manhattan,crs(LCr))
-LCproj = terra::project(LCr,crs(Manhattan))
+#LCr = rast(forests)
+Manhattan = st_transform(Manhattan,crs(forests))
+LCproj = terra::project(forests,crs(Manhattan))
 
 LCcrop = terra::crop(x = LCproj,
                      y = Manhattan %>%
-                       terra::vect(),
-                     mask = T)
+                       terra::vect())
 
 LC_forest_patches = LCcrop
 values(LC_forest_patches)[values(LC_forest_patches)==42] = 41
@@ -273,7 +391,7 @@ values(LC_forest_patches)[values(LC_forest_patches)==43] = 41
 values(LC_forest_patches)[values(LC_forest_patches)!=41] = NA
 
 y = get_patches(LC_forest_patches,directions=4)#patches(LC_forest_patches,directions=4)
-poly1 = as.polygons(terra::rast(y$layer_1$class_41))
+poly1 = as.polygons(y$layer_1$class_41)
 poly2 = st_as_sf(poly1)
 poly2$area = st_area(poly2)
 poly2$area = set_units(poly2$area,ha)
@@ -292,18 +410,134 @@ wmus = Manhattan
 sing_wmu = Manhattan
 source(paste0(getwd(),"/Scripts/SCR/Roadway_data_cleaning.R"))
 source(paste0(getwd(),"/Scripts/SCR/Alpine_ecozone_cleaning.R"))
-source(paste0(getwd(),"/Scripts/Universal/Process_nodes.R"))
+#source(paste0(getwd(),"/Scripts/Universal/Process_nodes.R"))
 source(paste0(getwd(),"/Scripts/SCR/Resistance_raster_processing.R"))
 source(paste0(getwd(),"/Scripts/SCR/Within_distance_comps.R"))
-source(paste0(getwd(),"/Scripts/SCR/Landscape_network.R"))
-source(paste0(getwd(),"/Scripts/SCR/Get_euclidean_distances.R"))
+#####
+# Alter landscape network
+#####
+myCluster <- parallel::makeCluster(cores)
+doParallel::registerDoParallel(myCluster)
+
+lcp_network <- foreach::foreach(i = 1:nrow(comps), .errorhandling = "remove", .combine = "rbind", .packages = c("sf","raster","gdistance","tmaptools","dplyr","leastcostpath","terra")) %dopar% {
+  
+  bbdf <- sf::st_bbox(fin_poly[c(comps[i,1],comps[i,2]),]) %>%
+    tmaptools::bb_poly(.,projection = sf::st_crs(fin_poly)) %>%
+    sf::st_as_sf()
+  
+  tr1=leastcostpath::create_cs(terra::crop(x=Rgrid %>%
+                                             terra::rast(),
+                                           y = bbdf,
+                                           mask=T))
+  
+  lcp <- leastcostpath::create_lcp(x = tr1,
+                                   origin = wmu_nodes[comps[i,1],,drop=FALSE],
+                                   destination = wmu_nodes[comps[i,2],, drop=FALSE]) %>%
+    sf::st_as_sf() %>%
+    dplyr::mutate(length = sf::st_length(.),
+                  origin_ID = fin_poly[comps[i,1],]$lyr.1,
+                  destination_ID =fin_poly[comps[i,2],]$lyr.1) #lcp$origin_ID <- comps[i,1]
+  
+  return(lcp)
+}
+
+parallel::stopCluster(myCluster)
+
+attributes(lcp_network$length) <- NULL
+lcp_network=lcp_network[,-c(1:3)]
+
+
+#####
+# Alter get euclid dist
+#####
+myCluster <- parallel::makeCluster(cores)
+doParallel::registerDoParallel(myCluster)
+
+coords <- foreach::foreach(i = 1:nrow(comps), .errorhandling = "remove", .combine = "rbind", .packages = c("sf", "terra")) %dopar% {
+  
+  
+  crds = data.frame(begin_lon = st_coordinates(st_as_sf(wmu_nodes[comps[i,1],]))[1],
+                    begin_lat = st_coordinates(st_as_sf(wmu_nodes[comps[i,1],]))[2],
+                    begin_id = wmu_nodes[comps[i,1],]$lyr.1,
+                    end_lon = st_coordinates(st_as_sf(wmu_nodes[comps[i,2],]))[1],
+                    end_lat = st_coordinates(st_as_sf(wmu_nodes[comps[i,2],]))[2],
+                    end_id = wmu_nodes[comps[i,2],]$lyr.1)
+  
+  gc()
+  
+  return(crds)
+  
+}
+parallel::stopCluster(myCluster)
+
+
+begin.coords = coords[,c(1:3)]
+names(begin.coords)=c("lon","lat","id")
+end.coords = coords[,c(4:6)]
+names(end.coords)=c("lon","lat","id")
+
+l_sf2 <- vector("list", nrow(begin.coords))
+for (i in seq_along(l_sf2)){
+  l_sf2[[i]] <- st_linestring(as.matrix(rbind(begin.coords[i,], end.coords[i,])))
+}
+
+
+line_df = st_sfc(l_sf2) %>%
+  st_as_sf() %>%
+  st_set_crs(.,st_crs(wmus)) %>%
+  mutate(origin_ID = begin.coords$id,
+         destination_ID = end.coords$id,
+         euclid_lengths = st_length(.))
+attributes(line_df$euclid_lengths)=NULL
+
+sinuosity_df = line_df %>%
+  st_drop_geometry() %>%
+  left_join(.,lcp_network,# %>% st_drop_geometry(),
+            by=c("origin_ID","destination_ID")) %>%
+  #dplyr::select(-direction),by=c("origin_ID","destination_ID")) %>%
+  mutate(length = ifelse(is.na(length)==T,0,length),
+         sinuosity = length/euclid_lengths,
+         inv_sinuosity = ifelse(length==0,0,euclid_lengths/length)) %>%
+  left_join(.,fin_poly,by=c("destination_ID"="lyr.1")) %>%
+  #mutate(mini_metric = inv_sinuosity*area) %>%
+  dplyr::select(-area)
+
+sinuosity_df2 = line_df %>%
+  st_drop_geometry() %>%
+  left_join(.,lcp_network, #%>% st_drop_geometry(),
+            by=c("origin_ID","destination_ID")) %>%
+  #dplyr::select(-direction),by=c("origin_ID","destination_ID")) %>%
+  mutate(length = ifelse(is.na(length)==T,0,length),
+         sinuosity = length/euclid_lengths,
+         inv_sinuosity = ifelse(length==0,0,euclid_lengths/length)) %>%
+  left_join(.,fin_poly,by=c("destination_ID"="lyr.1")) %>%
+  #mutate(mini_metric = inv_sinuosity*area) %>%
+  dplyr::select(-area) %>%
+  mutate(origin_ID2 = destination_ID,
+         destination_ID2 = origin_ID) %>%
+  mutate(origin_ID = origin_ID2,
+         destination_ID = destination_ID2) %>%
+  dplyr::select(-c(origin_ID2,destination_ID2))
+
+sinuosity_df = rbind(sinuosity_df,sinuosity_df2)
+
+line_df2 = st_sfc(l_sf2) %>%
+  st_as_sf() %>%
+  st_set_crs(.,st_crs(wmus)) %>%
+  mutate(origin_ID = end.coords$id,
+         destination_ID = begin.coords$id,
+         euclid_lengths = st_length(.))
+attributes(line_df2$euclid_lengths)=NULL
+
+line_df = rbind(line_df,line_df2)
 names(sinuosity_df)[1]="layer"
 names(sinuosity_df)[2]="layer.1"
 
-combdf = left_join(fin_poly,
+combdf = left_join(fin_poly %>%
+                     rename(layer = 'lyr.1'),
                    sinuosity_df,
                    by=c('layer')) %>%
-  left_join(.,fin_poly %>% st_drop_geometry(),
+  left_join(.,fin_poly %>% rename(layer = 'lyr.1') %>%st_drop_geometry(),
             by=c('layer.1'='layer')) %>%
   rename('i_area' = 'area.x',
          'j_area' = 'area.y')
@@ -316,6 +550,7 @@ final_metric = combdf %>%
   summarize(sijaj_sum = sum(sijaj,na.rm=T)) %>%
   ungroup() %>%
   left_join(.,fin_poly %>%
+              rename(layer = 'lyr.1') %>%
               st_drop_geometry(),
             by='layer') %>%
   mutate(numerator = sijaj_sum+area) %>%
@@ -462,7 +697,7 @@ m2 = tm_shape(Manhattan)+tm_borders()+
 
 full_map = tmap_arrange(m1,m2)
 
-tmap_save(full_map,paste0(getwd(),"/Figures/Relative_distance.jpeg"),
+tmap_save(full_map,paste0(getwd(),"/Figures/Relative_distance_scalebar.jpeg"),
           dpi=300)
 
 tmap_save(full_map,paste0(getwd(),"/Figures/Relative_distance.tiff"),

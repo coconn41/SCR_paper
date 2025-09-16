@@ -37,10 +37,11 @@ line_df = st_sfc(l_sf2) %>%
          destination_ID = end.coords$id,
          euclid_lengths = st_length(.))
 attributes(line_df$euclid_lengths)=NULL
-
+units(lcp_network$length)=NULL
 sinuosity_df = line_df %>%
   st_drop_geometry() %>%
-  left_join(.,lcp_network,# %>% st_drop_geometry(),
+  left_join(.,lcp_network  %>%
+              st_drop_geometry(),# %>% st_drop_geometry(),
               by=c("origin_ID","destination_ID")) %>%
   #dplyr::select(-direction),by=c("origin_ID","destination_ID")) %>%
   mutate(length = ifelse(is.na(length)==T,0,length),
@@ -65,7 +66,8 @@ sinuosity_df2 = line_df %>%
          destination_ID2 = origin_ID) %>%
   mutate(origin_ID = origin_ID2,
          destination_ID = destination_ID2) %>%
-  dplyr::select(-c(origin_ID2,destination_ID2))
+  dplyr::select(-c(origin_ID2,destination_ID2,geometry.y)) %>%
+  rename(geometry = 'geometry.x')
 
 sinuosity_df = rbind(sinuosity_df,sinuosity_df2)
 

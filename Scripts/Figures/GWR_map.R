@@ -157,6 +157,6 @@ Parameter_map = tmap_arrange(PC_parameter_map,ECA_parameter_map,
 # Save map:
 #####
 tmap_save(Parameter_map,
-          filename=paste0(getwd(),'/Figures/Parameter_maps.jpeg'),
+          filename=paste0(getwd(),'/Figures/Parameter_maps_scalebar.jpeg'),
           dpi = 300,
           height=12)
