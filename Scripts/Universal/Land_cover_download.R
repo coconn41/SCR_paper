@@ -4,7 +4,7 @@ LC = get_nlcd(template=template,
               year=2019,
               landmass = 'L48',
               force.redo = T,
-              extraction.dir = tdir)
+              extraction.dir = paste0(getwd(),'/Data/Input_data/'))
 #LCr = rast(LC)
 LCproj = terra::project(LC,crs(template))
 
