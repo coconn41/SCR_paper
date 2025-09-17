@@ -18,7 +18,7 @@ remove(rwd,rwd2)
 #                                  ifelse(FUNCTIONAL %in% major_roadways,2,0))) %>%
 #   st_transform(.,crs=st_crs(template))
 
-road_vect = terra::vect(roadwaydat)
+road_vect = terra::vect(as(roadwaydat,"Spatial"))
 road_pix  = terra::rasterize(x = road_vect,
                              y = LCcrop,
                              field = "Categorization")
