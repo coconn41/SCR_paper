@@ -3,6 +3,7 @@
 #####
 use_cached_LC = TRUE
 Conductance_resistance = "Resistance"
+calcPC=FALSE
 #####
 # Load libraries:
 #####
@@ -98,6 +99,7 @@ for(i in 1:nrow(wmus)){
 #####
 # Calculate PC index:
 #####
+if(calcPC==TRUE){
 for(i in 1:nrow(wmus)){
   wmu_i = wmus[i,]
   proj_name = wmu_i$UNIT
@@ -118,6 +120,7 @@ for(i in 1:nrow(wmus)){
   if(i==1){df2 = df}
   if(i>1){df2 = rbind(df,df2)}
   write.csv(df2,file = paste0(getwd(),'/Scripts/PC_graph4lg/Output/PC_results.csv'))
+  }
 }
 #####
 # Calculate delta PC index:
