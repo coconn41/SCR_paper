@@ -77,6 +77,7 @@ r_int[is.na(r_int)]=1000000
 
 writeRaster(r_int,
             filename = paste0(getwd(),'/Scripts/PC_graph4lg/WMU_rasts/',proj_name,".tif"),
+            datatype = "INT2S",
             overwrite = TRUE)
 
 graphab_project_fixed(proj_name = paste0("proj_",wmu_i$UNIT),
