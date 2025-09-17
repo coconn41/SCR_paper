@@ -87,7 +87,7 @@ graphab_links_fixed = function(proj_name, distance = "cost", name, cost = NULL, 
   java.path <- Sys.which("java")
   if(cluster==TRUE){version <- "Graphab-3.0.5.jar"
   path_to_graphab <- normalizePath(file.path("/user/collinoc/", 
-                                             "graph4lg_jar", version))
+                                             version))
   path_to_graphab <- shQuote(path_to_graphab)}
   if(cluster==FALSE){version <- "graphab-2.8.jar"
   path_to_graphab <- normalizePath(file.path(rappdirs::user_data_dir(), 
