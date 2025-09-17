@@ -54,6 +54,8 @@ source(paste0(getwd(),'/Scripts/PC_graph4lg/patch_graphab_metric.R'))
 # Cache R session:
 #####
 if(cluster==TRUE & use_cached_Rdata == FALSE){save.image(file = "/user/collinoc/SCR_paper/Scripts/PC_graph4lg/Graphab_data.Rdata")}
+if(use_cached_Rdata==TRUE){load(paste0(getwd(),'/Scripts/PC_graph4lg/Graphab_data.Rdata'))
+  source(paste0(getwd(),'/Scripts/Universal/Load_libraries.R'))}
 #####
 # Create projects:
 #####
@@ -111,8 +113,6 @@ for(i in 1:nrow(wmus)){
                       name = "graph_1",
                       thr = 1675)
 }
-if(use_cached_Rdata==TRUE){load(paste0(getwd(),'/Scripts/PC_graph4lg/Graphab_data.Rdata'))
-  source(paste0(getwd(),'/Scripts/Universal/Load_libraries.R'))}
 #####
 # Calculate PC index:
 #####
