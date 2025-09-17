@@ -22,7 +22,7 @@ roadwaydat$empty = st_is_empty(roadwaydat)
 roadwaydat = roadwaydat %>% 
   filter(empty == F)
 
-road_vect = terra::vect(as(roadwaydat,"Spatial"))
+road_vect = terra::vect(roadwaydat)
 road_pix  = terra::rasterize(x = road_vect,
                              y = LCcrop,
                              field = "Categorization")
