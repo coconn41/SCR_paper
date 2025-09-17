@@ -1,7 +1,7 @@
 #####
 # Settings:
 #####
-use_cached_LC = FALSE
+use_cached_LC = TRUE
 Conductance_resistance = "Resistance"
 calcPC=FALSE
 cluster = TRUE
