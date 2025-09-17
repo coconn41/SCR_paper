@@ -128,6 +128,7 @@ for(i in 1:nrow(wmus)){
 for(i in 1:nrow(wmus)){
   wmu_i = wmus[i,]
   proj_name = wmu_i$UNIT
+  print(paste0("Calculating dPC for ",proj_name))
   if(file.exists(paste0(getwd(),'/Scripts/PC_graph4lg/Output/dPC/dPC_results_',
                         proj_name,'.csv'))==T){next}
   start_time = Sys.time()
