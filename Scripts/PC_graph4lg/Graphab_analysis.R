@@ -7,7 +7,7 @@ calcPC=FALSE
 cluster = TRUE
 if(cluster==TRUE){setwd('/user/collinoc/SCR_paper/')
   options(graph4lg.path_graphab = "/user/collinoc/graphab-3.0.5.jar")}
-use_cached_Rdata = FALSE
+use_cached_Rdata = TRUE
 #####
 # Load libraries:
 #####
@@ -111,7 +111,8 @@ for(i in 1:nrow(wmus)){
                       name = "graph_1",
                       thr = 1675)
 }
-
+if(use_cached_Rdata==TRUE){load(paste0(getwd(),'/Scripts/PC_graph4lg/Graphab_data.Rdata'))
+  source(paste0(getwd(),'/Scripts/Universal/Load_libraries.R'))}
 #####
 # Calculate PC index:
 #####
