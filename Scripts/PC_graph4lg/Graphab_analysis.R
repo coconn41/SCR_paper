@@ -63,7 +63,7 @@ writeRaster(r_int,
             overwrite = TRUE)
 
 graphab_project_fixed(proj_name = paste0("proj_",wmu_i$UNIT),
-                      proj_path = "/Users/collinoconnor/Desktop/Rprojects/SCR_paper/Graphab_projects",
+                      proj_path = paste0(getwd(),"/SCR_paper/Graphab_projects"),
                 raster = paste0(getwd(),'/Scripts/PC_graph4lg/WMU_rasts/',wmu_i$UNIT,'.tif'),
                 habitat = c(1),
                 minarea = .017)
@@ -77,7 +77,7 @@ proj_name = wmu_i$UNIT
 r <- terra::rast(paste0(getwd(),'/Scripts/PC_graph4lg/WMU_rasts/',proj_name,".tif"))
 
 graphab_links_fixed(proj_name = paste0("proj_",proj_name),
-                    proj_path = "/Users/collinoconnor/Desktop/Rprojects/SCR_paper/Graphab_projects",
+                    proj_path = paste0(getwd(),"/SCR_paper/Graphab_projects"),
                     distance = "cost",
                     cost = paste0(getwd(),'/Scripts/PC_graph4lg/WMU_rasts/',proj_name,'.tif'),
                     name = "linkset_1",
@@ -90,7 +90,7 @@ for(i in 1:nrow(wmus)){
   wmu_i = wmus[i,]
   proj_name = wmu_i$UNIT
   graphab_graph_fixed(proj_name = paste0("proj_",proj_name),
-                      proj_path = "/Users/collinoconnor/Desktop/Rprojects/SCR_paper/Graphab_projects",
+                      proj_path = paste0(getwd(),"/SCR_paper/Graphab_projects"),
                       linkset = "linkset_1",
                       name = "graph_1",
                       thr = 1675)
@@ -105,7 +105,7 @@ for(i in 1:nrow(wmus)){
   proj_name = wmu_i$UNIT
   start_time = Sys.time()
   met <- graphab_metric_fixed(proj_name = paste0("proj_",proj_name),
-                 proj_path = "/Users/collinoconnor/Desktop/Rprojects/SCR_paper/Graphab_projects",
+                 proj_path = paste0(getwd(),"/SCR_paper/Graphab_projects"),
                  graph = "graph_1",
                  metric = "PC",
                  dist = 1675,
@@ -133,7 +133,7 @@ for(i in 1:nrow(wmus)){
                         proj_name,'.csv'))==T){next}
   start_time = Sys.time()
   dPC_met <- graphab_metric_fixed(proj_name = paste0("proj_",proj_name),
-                              proj_path = "/Users/collinoconnor/Desktop/Rprojects/SCR_paper/Graphab_projects",
+                              proj_path = paste0(getwd(),"/SCR_paper/Graphab_projects"),
                               graph = "graph_1",
                               metric = "dPC",
                               dist = 1675,
