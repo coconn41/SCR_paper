@@ -19,8 +19,9 @@ template = read_sf(paste0(getwd(),'/Data/Input_data/cb_2018_us_state_500k.shp'))
   st_transform(.,crs = 32618)
 if(use_cached_LC==FALSE){source(paste0(getwd(),"/Scripts/Universal/Land_cover_download.R"))}
 if(use_cached_LC==TRUE){
-if(cluster==TRUE){LC = raster::raster(paste0(getwd(),'/Data/Input_data/NLCD_NLCD_Land_Cover_2019.tif'))}
-if(cluster==FALSE){LC = raster::raster(paste0(getwd(),'/Data/Input_data/NYS NLCD_NLCD_Land_Cover_2019.tif'))}
+#if(cluster==TRUE){LC = raster::raster(paste0(getwd(),'/Data/Input_data/NLCD_NLCD_Land_Cover_2019.tif'))}
+#if(cluster==FALSE){LC = raster::raster(paste0(getwd(),'/Data/Input_data/NYS NLCD_NLCD_Land_Cover_2019.tif'))}
+LC = raster::raster(paste0(getwd(),'/Data/Input_data/NYS NLCD_NLCD_Land_Cover_2019.tif'))
 LCr = rast(LC)
 LCproj = terra::project(LCr,template)
 LCcrop = terra::crop(x = LCproj,
