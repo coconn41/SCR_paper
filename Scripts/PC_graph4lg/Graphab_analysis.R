@@ -4,6 +4,8 @@
 use_cached_LC = FALSE
 Conductance_resistance = "Resistance"
 calcPC=FALSE
+cluster = TRUE
+if(cluster==TRUE){setwd('/user/collinoc/SCR_paper/')}
 #####
 # Load libraries:
 #####
