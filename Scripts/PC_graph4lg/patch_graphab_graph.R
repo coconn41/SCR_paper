@@ -61,7 +61,7 @@ graphab_graph_fixed <- function(proj_name, linkset = NULL, name = NULL, thr = NU
     message("Graphab has been downloaded")
   }
   java.path <- Sys.which("java")
-  if(cluster==TRUE){version <- "Graphab-3.0.5.jar"
+  if(cluster==TRUE){version <- "graphab-3.0.5.jar"
   path_to_graphab <- normalizePath(file.path("/user/collinoc", 
                                              version))
   path_to_graphab <- shQuote(path_to_graphab)}
