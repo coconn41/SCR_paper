@@ -7,12 +7,11 @@ calcPC=FALSE
 cluster = TRUE
 if(cluster==TRUE){setwd('/user/collinoc/SCR_paper/')
   options(graph4lg.path_graphab = "/user/collinoc/graphab-3.0.5.jar")}
-use_cached_Rdata = FALSE
+use_cached_Rdata = TRUE
 #####
 # Load libraries:
 #####
 source(paste0(getwd(),'/Scripts/Universal/Load_libraries.R'))
-if(use_cached_Rdata==F){
 #####
 # WMU Shapefile and Land Cover Download:
 #####
@@ -20,6 +19,7 @@ wmus = read_sf(paste0(getwd(),"/Data/Input_data/WMUs/Wildlife_Management_Units.s
 template = read_sf(paste0(getwd(),'/Data/Input_data/cb_2018_us_state_500k.shp')) %>%
   filter(NAME == "New York") %>%
   st_transform(.,crs = 32618)
+if(use_cached_Rdata==F){
 if(use_cached_LC==FALSE){source(paste0(getwd(),"/Scripts/Universal/Land_cover_download.R"))}
 if(use_cached_LC==TRUE){
 #if(cluster==TRUE){LC = raster::raster(paste0(getwd(),'/Data/Input_data/NLCD_NLCD_Land_Cover_2019.tif'))}
@@ -42,6 +42,10 @@ source(paste0(getwd(),'/Scripts/SCR/Roadway_data_cleaning.R'))
 # Process raster:
 #####
 source(paste0(getwd(),'/Scripts/SCR/Resistance_raster_processing.R'))
+writeRaster(Resistance_grid,
+            filename=paste0(getwd(),'/Data/Input_data/Resistance_grid.tiff'),
+            overwrite=T)
+}
 #####
 # Fix graphab functions:
 #####
@@ -49,13 +53,10 @@ source(paste0(getwd(),'/Scripts/PC_graph4lg/patch_graphab_project.R'))
 source(paste0(getwd(),'/Scripts/PC_graph4lg/patch_graphab_links.R'))
 source(paste0(getwd(),'/Scripts/PC_graph4lg/patch_graphab_graph.R'))
 source(paste0(getwd(),'/Scripts/PC_graph4lg/patch_graphab_metric.R'))
-}
 #####
 # Cache R session:
 #####
-if(cluster==TRUE & use_cached_Rdata == FALSE){save.image(file = "/user/collinoc/SCR_paper/Scripts/PC_graph4lg/Graphab_data.Rdata")}
-if(use_cached_Rdata==TRUE){load(paste0(getwd(),'/Scripts/PC_graph4lg/Graphab_data.Rdata'))
-  source(paste0(getwd(),'/Scripts/Universal/Load_libraries.R'))}
+if(use_cached_Rdata==TRUE){Resistance_grid <- terra::rast(paste0(getwd(),'/Data/Input_data/Resistance_grid.tiff'))}
 #####
 # Create projects:
 #####
