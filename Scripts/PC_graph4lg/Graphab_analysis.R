@@ -5,11 +5,14 @@ use_cached_LC = TRUE
 Conductance_resistance = "Resistance"
 calcPC=FALSE
 cluster = TRUE
-if(cluster==TRUE){setwd('/user/collinoc/SCR_paper/')}
+if(cluster==TRUE){setwd('/user/collinoc/SCR_paper/')
+  options(graph4lg.path_graphab = "/user/collinoc/graphab-3.0.5.jar")}
+use_cached_Rdata = FALSE
 #####
 # Load libraries:
 #####
 source(paste0(getwd(),'/Scripts/Universal/Load_libraries.R'))
+if(use_cached_Rdata==F){
 #####
 # WMU Shapefile and Land Cover Download:
 #####
@@ -46,9 +49,15 @@ source(paste0(getwd(),'/Scripts/PC_graph4lg/patch_graphab_project.R'))
 source(paste0(getwd(),'/Scripts/PC_graph4lg/patch_graphab_links.R'))
 source(paste0(getwd(),'/Scripts/PC_graph4lg/patch_graphab_graph.R'))
 source(paste0(getwd(),'/Scripts/PC_graph4lg/patch_graphab_metric.R'))
+}
+#####
+# Cache R session:
+#####
+if(cluster==TRUE & use_cached_Rdata == FALSE){save.image(file = "/user/collinoc/SCR_paper/Scripts/PC_graph4lg/Graphab_data.Rdata")}
 #####
 # Create projects:
 #####
+print(paste0("Creating projects"))
 for(i in 1:nrow(wmus)){
 wmu_i = wmus[i,]
 proj_name = wmu_i$UNIT
@@ -76,6 +85,7 @@ graphab_project_fixed(proj_name = paste0("proj_",wmu_i$UNIT),
 #####
 # Create graphab links:
 #####
+print(paste0("Creating links"))
 for(i in 1:nrow(wmus)){
 wmu_i = wmus[i,]
 proj_name = wmu_i$UNIT
@@ -91,6 +101,7 @@ graphab_links_fixed(proj_name = paste0("proj_",proj_name),
 #####
 # Create graphs:
 #####
+print(paste0("Creating graphs"))
 for(i in 1:nrow(wmus)){
   wmu_i = wmus[i,]
   proj_name = wmu_i$UNIT
@@ -105,6 +116,7 @@ for(i in 1:nrow(wmus)){
 # Calculate PC index:
 #####
 if(calcPC==TRUE){
+print(paste0("Calculting PC index"))
 for(i in 1:nrow(wmus)){
   wmu_i = wmus[i,]
   proj_name = wmu_i$UNIT
@@ -130,6 +142,7 @@ for(i in 1:nrow(wmus)){
 #####
 # Calculate delta PC index:
 #####
+print(paste0("Calculating dPC index"))
 for(i in 1:nrow(wmus)){
   wmu_i = wmus[i,]
   proj_name = wmu_i$UNIT
