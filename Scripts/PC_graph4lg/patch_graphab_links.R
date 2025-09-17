@@ -85,7 +85,8 @@ graphab_links_fixed = function(proj_name, distance = "cost", name, cost = NULL, 
     message("Graphab has been downloaded")
   }
   java.path <- Sys.which("java")
-  version <- "graphab-2.8.jar"
+  if(cluster==TRUE){version <- "Graphab-3.0.5.jar"}
+  if(cluster==FALSE){version <- "graphab-2.8.jar"}
   path_to_graphab <- normalizePath(file.path(rappdirs::user_data_dir(), 
                                              "graph4lg_jar", version))
   path_to_graphab <- shQuote(path_to_graphab)
