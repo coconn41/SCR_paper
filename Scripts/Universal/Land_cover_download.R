@@ -5,8 +5,8 @@ LC = get_nlcd(template=template,
               landmass = 'L48',
               force.redo = T,
               extraction.dir = paste0(getwd(),'/Data/Input_data/'))
-#LCr = rast(LC)
-LCproj = terra::project(LC,crs(template))
+LCr = rast(LC)
+LCproj = terra::project(LC,template)
 
 LCcrop = terra::crop(x = LCproj,
                      y = template |>
