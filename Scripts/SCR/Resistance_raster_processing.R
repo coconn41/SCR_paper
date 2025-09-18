@@ -54,7 +54,7 @@ Resistance_grid = sum(Resistance_grid,LC_low_developed,na.rm=T)
 Resistance_grid = sum(Resistance_grid,alpine_pix,na.rm=T)
 Resistance_grid = sum(Resistance_grid,Highways,na.rm=T)
 Resistance_grid = sum(Resistance_grid,minor_roads,na.rm=T)
-Resistance_grid[Resistance_grid==0]=1000000 # This was NA, changed for graphab
+Resistance_grid[Resistance_grid==0]=10000 # This was NA, changed for graphab
 if(Conductance_resistance=="Conductance"){
 Resistance_grid=1/Resistance_grid # These are now conductances, the inverse was taken
 }
