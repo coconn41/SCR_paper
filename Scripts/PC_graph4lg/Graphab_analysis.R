@@ -62,6 +62,7 @@ if(use_cached_Rdata==TRUE){Resistance_grid <- terra::rast(paste0(getwd(),'/Data/
 #####
 print(paste0("Creating projects"))
 for(i in 1:nrow(wmus)){
+print(paste0(i," of 92"))
 wmu_i = wmus[i,]
 proj_name = wmu_i$UNIT
 proj_name_string = paste0(proj_name,".tif")
@@ -86,11 +87,13 @@ graphab_project_fixed(proj_name = paste0("proj_",wmu_i$UNIT),
                 habitat = c(1),
                 minarea = .017)
 }
+print(paste0("Finished project creation"))
 #####
 # Create graphab links:
 #####
 print(paste0("Creating links"))
 for(i in 1:nrow(wmus)){
+print(paste0(i," of 92"))
 wmu_i = wmus[i,]
 proj_name = wmu_i$UNIT
 r <- terra::rast(paste0(getwd(),'/Scripts/PC_graph4lg/WMU_rasts/',proj_name,".tif"))
@@ -102,11 +105,13 @@ graphab_links_fixed(proj_name = paste0("proj_",proj_name),
                     name = "linkset_1",
                     topo = "planar")
 }
+print(paste0("Finished link creation"))
 #####
 # Create graphs:
 #####
 print(paste0("Creating graphs"))
 for(i in 1:nrow(wmus)){
+print(paste0(i," of 92"))
   wmu_i = wmus[i,]
   proj_name = wmu_i$UNIT
   graphab_graph_fixed(proj_name = paste0("proj_",proj_name),
@@ -115,6 +120,7 @@ for(i in 1:nrow(wmus)){
                       name = "graph_1",
                       thr = 1675)
 }
+print(paste0("finished graph creation"))
 #####
 # Calculate PC index:
 #####
