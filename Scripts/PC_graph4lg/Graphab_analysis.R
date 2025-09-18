@@ -73,7 +73,7 @@ r = terra::crop(Resistance_grid,
 
 r_int <- round(r)
 r_int <- as.int(r_int)
-r_int[is.na(r_int)]=1000000
+r_int[is.na(r_int)]=10000
 
 writeRaster(r_int,
             filename = paste0(getwd(),'/Scripts/PC_graph4lg/WMU_rasts/',proj_name,".tif"),
