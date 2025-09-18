@@ -7,7 +7,7 @@ calcPC=FALSE
 cluster = TRUE
 if(cluster==TRUE){setwd('/user/collinoc/SCR_paper/')
   options(graph4lg.path_graphab = "/user/collinoc/graphab-3.0.5.jar")}
-use_cached_Rdata = FALSE
+use_cached_Rdata = TRUE
 #####
 # Load libraries:
 #####
