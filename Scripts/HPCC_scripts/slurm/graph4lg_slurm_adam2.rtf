@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+#SBATCH --cluster=faculty
+#SBATCH --qos=adamw
+#SBATCH --partition=adamw
+#SBATCH --job-name "graphab run adam2"
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=26
+#SBATCH --mem=200G
+#SBATCH  -C INTEL
+#SBATCH --time=240:00:00 
+#SBATCH --mail-user=collinoc@buffalo.edu
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+#SBATCH -o graph4lg_adam2.out
+
+
+  # Specify directories needed and sif file
+
+  export PROJECT_FOLDER="/projects/academic/adamw/users/collinoc/"
+  export APPTAINER_CACHEDIR="/projects/academic/adamw/users/collinoc/singularity"
+  export SIF_PATH=$PROJECT_FOLDER"/singularity"
+  export SIF_FILE="AdamWilsonLab-emma_docker-latest.sif"
+
+
+  # make needed directories
+
+  mkdir -p "$APPTAINER_CACHEDIR/tmp"
+  mkdir -p "$APPTAINER_CACHEDIR/run"
+
+  # execute the function run_verbose.sh (which in turn runs the function run.R, which in turn calls tar_make())
+
+  singularity exec \
+  --bind $PROJECT_FOLDER:$PROJECT_FOLDER \
+  --bind $APPTAINER_CACHEDIR/tmp:/tmp \
+  --bind $APPTAINER_CACHEDIR/run:/run \
+  $SIF_PATH/$SIF_FILE ./SCR_paper/Scripts/HPCC_scripts/verbose/graph4lg_verbose_adam2.sh

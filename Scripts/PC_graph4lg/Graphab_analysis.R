@@ -155,6 +155,7 @@ print(paste0("Calculating dPC index"))
 for(i in 1:nrow(wmus)){
   wmu_i = wmus[i,]
   proj_name = wmu_i$UNIT
+  if(proj_name!="6A"){next}
   print(paste0("Calculating dPC for ",proj_name))
   if(file.exists(paste0(getwd(),'/Scripts/PC_graph4lg/Output/dPC/dPC_results_',
                         proj_name,'.csv'))==T){next}
