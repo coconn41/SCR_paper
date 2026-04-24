@@ -4,7 +4,7 @@
 use_cached_LC = TRUE
 Conductance_resistance = "Resistance"
 calcPC=FALSE
-cluster = TRUE
+cluster = FALSE
 if(cluster==TRUE){setwd('/user/collinoc/SCR_paper/')
   options(graph4lg.path_graphab = "/user/collinoc/graphab-3.0.5.jar")}
 use_cached_Rdata = TRUE
@@ -64,6 +64,8 @@ print(paste0("Creating projects"))
 for(i in 1:nrow(wmus)){
 print(paste0(i," of 92"))
 wmu_i = wmus[i,]
+if(file.exists(paste0(getwd(),'/Scripts/PC_graph4lg/Output/dPC/dPC_results_',
+                      wmu_i$UNIT,".csv"))==T){next}
 proj_name = wmu_i$UNIT
 proj_name_string = paste0(proj_name,".tif")
 
@@ -95,6 +97,8 @@ print(paste0("Creating links"))
 for(i in 1:nrow(wmus)){
 print(paste0(i," of 92"))
 wmu_i = wmus[i,]
+if(file.exists(paste0(getwd(),'/Scripts/PC_graph4lg/Output/dPC/dPC_results_',
+                      wmu_i$UNIT,".csv"))==T){next}
 proj_name = wmu_i$UNIT
 r <- terra::rast(paste0(getwd(),'/Scripts/PC_graph4lg/WMU_rasts/',proj_name,".tif"))
 
@@ -113,6 +117,8 @@ print(paste0("Creating graphs"))
 for(i in 1:nrow(wmus)){
 print(paste0(i," of 92"))
   wmu_i = wmus[i,]
+  if(file.exists(paste0(getwd(),'/Scripts/PC_graph4lg/Output/dPC/dPC_results_',
+                        wmu_i$UNIT,".csv"))==T){next}
   proj_name = wmu_i$UNIT
   graphab_graph_fixed(proj_name = paste0("proj_",proj_name),
                       proj_path = paste0(getwd(),"/Graphab_projects"),
@@ -128,6 +134,8 @@ if(calcPC==TRUE){
 print(paste0("Calculting PC index"))
 for(i in 1:nrow(wmus)){
   wmu_i = wmus[i,]
+  if(file.exists(paste0(getwd(),'/Scripts/PC_graph4lg/Output/dPC/dPC_results_',
+                        wmu_i$UNIT,".csv"))==T){next}
   proj_name = wmu_i$UNIT
   start_time = Sys.time()
   met <- graphab_metric_fixed(proj_name = paste0("proj_",proj_name),
@@ -154,6 +162,8 @@ for(i in 1:nrow(wmus)){
 print(paste0("Calculating dPC index"))
 for(i in 1:nrow(wmus)){
   wmu_i = wmus[i,]
+  if(file.exists(paste0(getwd(),'/Scripts/PC_graph4lg/Output/dPC/dPC_results_',
+                        wmu_i$UNIT,".csv"))==T){next}
   proj_name = wmu_i$UNIT
   if(proj_name!="6A"){next}
   print(paste0("Calculating dPC for ",proj_name))
